@@ -7,6 +7,28 @@ const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, sleep, fetchJson
 const { writeFileSync } = require('fs');
 const path = require('path');
 
+cmd({
+    pattern: "chatbot",
+    alias: ["chatb"],
+    react: "🎊",
+    desc: "Enable or disable admin event notifications",
+    category: "settings",
+    filename: __filename
+},
+async (conn, mek, m, { from, args, isCreator, reply }) => {
+    if (!isCreator) return reply("*📛 ᴏɴʟʏ ᴛʜᴇ ᴏᴡɴᴇʀ ᴄᴀɴ ᴜsᴇ ᴛʜɪs ᴄᴏᴍᴍᴀɴᴅ!*");
+
+    const status = args[0]?.toLowerCase();
+    if (status === "on") {
+        config.CHAT_BOT = "true";
+        return reply("✅ Chat-Bot are now enabled.");
+    } else if (status === "off") {
+        config.CHAT_BOT = "false";
+        return reply("❌ Chat-Bot are now disabled.");
+    } else {
+        return reply(`Example: .chatbot on`);
+    }
+});
 
 cmd({
     pattern: "admin-events",
