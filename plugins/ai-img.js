@@ -53,7 +53,7 @@ cmd({
     await reply("> 🧠 *Creating AI Image... Please wait!* 🔥");
 
     // API endpoint (direct image)
-    const apiUrl = `https://malvin-api.vercel.app/ai/creart/image?prompt=${encodeURIComponent(q)}`;
+    const apiUrl = `https://api.malvin.gleeze.com/ai/creart/image?prompt=${encodeURIComponent(q)}&apikey=mvn_c2faaeeccbfd38b5c21c08e5d60f4db8`;
 
     // Fetch image as binary
     const response = await axios.get(apiUrl, { responseType: "arraybuffer" });
@@ -96,7 +96,7 @@ cmd({
     const style = "img"; // you can change or later make dynamic
 
     // API endpoint
-    const apiUrl = `https://malvin-api.vercel.app/ai/deepimg?prompt=${encodeURIComponent(q)}&style=${encodeURIComponent(style)}`;
+    const apiUrl = `https://api.malvin.gleeze.com/ai/deepimg?prompt=${encodeURIComponent(q)}&style=${encodeURIComponent(style)}&apikey=mvn_c2faaeeccbfd38b5c21c08e5d60f4db8`;
 
     const response = await axios.get(apiUrl);
 
