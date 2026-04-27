@@ -10,7 +10,7 @@ const { cmd, commands } = require('../command');
 const { getBuffer, getGroupAdmins, getRandom, h2k, isUrl, Json, runtime, sleep, fetchJson } = require('../lib/functions');
 
 // API Key (Environment variable එකෙන් හෝ default එක භාවිතා කරයි)
-const DEFAULT_API_KEY = "AIzaSyAptgLoZ6l8ZZk-uOr2H123Q9qWHqvYn3s";
+const DEFAULT_API_KEY = "AIzaSyCvHqkCfXQP7JUl50HVFs0AaAz3G3lPWXQ";
 
 // Ovnix AI System Prompt
 let usp = `
@@ -131,7 +131,7 @@ cmd({
 async (conn, mek, m, { from, args, reply, prefix, sender }) => {
     try {
         const userMessage = args.join(" ");
-        if (!userMessage) return await reply(`*උදාහරණ:* \`${prefix}gemini වෙබ් අඩවියක් හදන්න කීයක් යනවද?\``);
+        if (!userMessage) return await reply(`*උදාහරණ:* \`.gemini වෙබ් අඩවියක් හදන්න කීයක් යනවද?\``);
 
         const response = await getGeminiResponse(userMessage, sender);
         if (response.status) {
