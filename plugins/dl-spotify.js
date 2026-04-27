@@ -1,6 +1,7 @@
 const { cmd } = require('../command');
 const axios = require('axios');
 
+// --- 1. SPOTIFY SEARCH COMMAND ---
 cmd({
     pattern: "spotify",
     desc: "Search Spotify tracks",
@@ -32,7 +33,7 @@ async (conn, mek, m, { from, q, reply }) => {
             txt += `🔗 URL: ${s.spotifyUrl}\n\n`;
         });
 
-        txt += `*🔢 Please Reply with the number.* \n\n> *© Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
+        txt += `*🔢 Please Reply with the number.*\n\n> *© Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
 
         await conn.sendMessage(from, { text: txt }, { quoted: mek });
 
@@ -42,18 +43,22 @@ async (conn, mek, m, { from, q, reply }) => {
     }
 });
 
+// --- 2. REPLY LISTENER ---
 cmd({
     on: "body"
 }, async (conn, mek, m, { body, from, reply }) => {
     try {
         if (!m.quoted) return;
-        const quotedText = m.quoted.text || m.quoted.conversation || "";
+
+        // වැදගත්: රූපයක් Quoted කළ විට caption එක පරීක්ෂා කිරීම
+        const quotedText = m.quoted.text || m.quoted.caption || m.quoted.conversation || "";
         if (!quotedText) return;
 
         const selection = body.trim();
         if (isNaN(selection)) return;
         const num = parseInt(selection);
 
+        // --- STEP 1: Track selection to Format Menu ---
         if (quotedText.includes("SPOTIFY SEARCH LIST")) {
             const lines = quotedText.split("\n");
             const targetLineIndex = lines.findIndex(l => l.startsWith(`*${num}.*`));
@@ -83,9 +88,11 @@ cmd({
             }
         }
 
+        // --- STEP 2: Format selection to Download ---
         if (quotedText.includes("Spotify Downloader")) {
             if (![1, 2, 3].includes(num)) return;
 
+            // දත්ත වෙන් කර ගැනීම
             const trackName = quotedText.split("Track:* ")[1].split("\n")[0].trim();
             const spotifyUrl = quotedText.split("URL:* ")[1].split("\n")[0].trim();
 
@@ -116,7 +123,7 @@ cmd({
                             }, { quoted: mek });
                             break;
 
-                        case "3": // Voice
+                        case "3": // Voice (PTT)
                             await conn.sendMessage(from, {
                                 audio: { url: downloadUrl },
                                 mimetype: "audio/mpeg",
@@ -133,7 +140,7 @@ cmd({
     } catch (e) {
         console.log("Spotify Listener Error:", e);
     }
-});            
+});                
 
 
 cmd({
