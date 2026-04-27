@@ -8,36 +8,132 @@ cmd({
     react: "🎵",
     filename: __filename
 },
-async (conn, mek, m, { from, args, q, reply }) => {
+async (conn, mek, m, { from, q, reply }) => {
     try {
-        if (!q) return reply("*Please provide a song name to search on Spotify.*");
+        if (!q) return reply("*Please provide a song name!*");
 
         reply("🔍 *Searching Spotify... Please wait!*");
 
-        const { data } = await axios.get(`https://vajira-api.vercel.app/search/spotify?q=`, {
-            params: { q }
-        });
+        const response = await axios.get(`https://jerrycoder.oggyapi.workers.dev/spotify?search=${encodeURIComponent(q)}`);
+        const data = response.data;
 
-        if (!data.status || !data.result || data.result.length === 0)
+        if (data.status !== "success" || !data.tracks || data.tracks.length === 0) {
             return reply("*No songs found!*");
+        }
 
-        let txt = `🎧 *SPOTIFY SEARCH RESULTS*\n\n`;
-        data.result.slice(0, 30).forEach((s, i) => {
-            const durationSec = Math.floor(s.duration / 1000);
-            const min = Math.floor(durationSec / 60).toString().padStart(2, '0');
-            const sec = (durationSec % 60).toString().padStart(2, '0');
-            txt += `*${i + 1}. ${s.title}*\n👤 Artist: ${s.artist}\n⏱️ Duration: ${min}:${sec}\n🔥 Popularity: ${s.popularity}\n🔗 ${s.url}\n\n`;
+        let txt = `🎧 *SPOTIFY SEARCH LIST* 🎧\n\n`;
+        txt += `🔎 *Search:* ${q}\n\n`;
+
+        data.tracks.forEach((s, i) => {
+            txt += `*${i + 1}.* ${s.trackName}\n`;
+            txt += `👤 Artist: ${s.artist}\n`;
+            txt += `⏱️ Duration: ${s.durationMs}\n`;
+            txt += `🖼️ Img: ${s.image}\n`;
+            txt += `🔗 URL: ${s.spotifyUrl}\n\n`;
         });
 
-        txt += `> *© Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
+        txt += `*🔢 Please Reply with the number.* \n\n> *© Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
 
         await conn.sendMessage(from, { text: txt }, { quoted: mek });
 
     } catch (e) {
         console.error(e);
-        reply("*Error fetching Spotify data.*");
+        reply("*Error fetching Spotify search results.*");
     }
 });
+
+cmd({
+    on: "body"
+}, async (conn, mek, m, { body, from, reply }) => {
+    try {
+        if (!m.quoted) return;
+        const quotedText = m.quoted.text || m.quoted.conversation || "";
+        if (!quotedText) return;
+
+        const selection = body.trim();
+        if (isNaN(selection)) return;
+        const num = parseInt(selection);
+
+        if (quotedText.includes("SPOTIFY SEARCH LIST")) {
+            const lines = quotedText.split("\n");
+            const targetLineIndex = lines.findIndex(l => l.startsWith(`*${num}.*`));
+            if (targetLineIndex === -1) return;
+
+            const trackName = lines[targetLineIndex].split(".* ")[1].trim();
+            const artist = lines[targetLineIndex + 1].split("Artist: ")[1].trim();
+            const duration = lines[targetLineIndex + 2].split("Duration: ")[1].trim();
+            const image = lines[targetLineIndex + 3].split("Img: ")[1].trim();
+            const spotifyUrl = lines[targetLineIndex + 4].split("URL: ")[1].trim();
+
+            if (trackName && spotifyUrl) {
+                let formatMsg = `🎧 *Spotify Downloader* 📥\n\n`;
+                formatMsg += `🎵 *Track:* ${trackName}\n`;
+                formatMsg += `👤 *Artist:* ${artist}\n`;
+                formatMsg += `⏱️ *Duration:* ${duration}\n`;
+                formatMsg += `🔗 *URL:* ${spotifyUrl}\n\n`;
+                formatMsg += `*1.* 🎵 Audio (Normal)\n`;
+                formatMsg += `*2.* 📄 Document (File)\n`;
+                formatMsg += `*3.* 🎤 Voice (PTT)\n\n`;
+                formatMsg += `> *🔢 Please Reply Below Number.*`;
+
+                return await conn.sendMessage(from, { 
+                    image: { url: image }, 
+                    caption: formatMsg 
+                }, { quoted: mek });
+            }
+        }
+
+        if (quotedText.includes("Spotify Downloader")) {
+            if (![1, 2, 3].includes(num)) return;
+
+            const trackName = quotedText.split("Track:* ")[1].split("\n")[0].trim();
+            const spotifyUrl = quotedText.split("URL:* ")[1].split("\n")[0].trim();
+
+            if (trackName && spotifyUrl) {
+                reply(`📥 *Downloading:* ${trackName}...`);
+
+                const dlRes = await axios.get(`https://jerrycoder.oggyapi.workers.dev/dspotify?url=${encodeURIComponent(spotifyUrl)}`);
+                const dlData = dlRes.data;
+
+                if (dlData.status === "success" && dlData.download_link) {
+                    const downloadUrl = dlData.download_link;
+
+                    switch (selection) {
+                        case "1": // Normal Audio
+                            await conn.sendMessage(from, {
+                                audio: { url: downloadUrl },
+                                mimetype: "audio/mpeg",
+                                ptt: false,
+                            }, { quoted: mek });
+                            break;
+
+                        case "2": // Document
+                            await conn.sendMessage(from, {
+                                document: { url: downloadUrl },
+                                mimetype: "audio/mpeg",
+                                fileName: `${trackName}.mp3`,
+                                caption: `*Spotify Download*\n🎵 ${trackName}`
+                            }, { quoted: mek });
+                            break;
+
+                        case "3": // Voice
+                            await conn.sendMessage(from, {
+                                audio: { url: downloadUrl },
+                                mimetype: "audio/mpeg",
+                                ptt: true,
+                            }, { quoted: mek });
+                            break;
+                    }
+                } else {
+                    reply("❌ *Failed to get download link!*");
+                }
+            }
+        }
+
+    } catch (e) {
+        console.log("Spotify Listener Error:", e);
+    }
+});            
 
 
 cmd({
