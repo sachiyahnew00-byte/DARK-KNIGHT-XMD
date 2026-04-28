@@ -14,15 +14,11 @@ cmd({
     try {
         if (!q) return reply("❓ What song do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
         // Use Zenzxz API
         const api = `https://ominisave.com/api/ytmp3_v3?url=${encodeURIComponent(ytUrl)}`;
@@ -118,16 +114,12 @@ cmd({
     try {
         if (!q) return reply("❓ What video do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
-        
+        const data = search.videos[0];
+        const ytUrl = data.url;
+
         // Define API links for multiple qualities
         const formats = {
             "144p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=144p`,
@@ -246,16 +238,12 @@ cmd({
     try {
         if (!q) return reply("❓ What song do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
-        
+        const data = search.videos[0];
+        const ytUrl = data.url;
+
         // Use Zenzxz API
         const api = `https://sai-green.vercel.app/manump3?url=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
@@ -350,15 +338,11 @@ cmd({
     try {
         if (!q) return reply("❓ What video do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
         // Define API links for multiple qualities
         const formats = {
@@ -478,15 +462,11 @@ cmd({
     try {
         if (!q) return reply("❓ What song do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
         const api = `https://www.movanest.xyz/v2/ytmp3?url=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
@@ -581,15 +561,11 @@ cmd({
     try {
         if (!q) return reply("❓ What video do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
         // Define API links for multiple qualities
         const formats = {
@@ -709,15 +685,11 @@ cmd({
     try {
         if (!q) return reply("❓ What song do you want to download?");
 
-        let ytUrl;
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
 
-        if (q.includes("youtube.com/") || q.includes("youtu.be/")) {
-            ytUrl = q;
-        } else {
-            const search = await yts(q);
-            if (!search.videos.length) return reply("❌ No results found for your query.");
-            ytUrl = search.videos[0].url;
-        }
+        const data = search.videos[0];
+        const ytUrl = data.url;
 
         const api = `https://api-aswin-sparky.koyeb.app/api/downloader/song?search=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
