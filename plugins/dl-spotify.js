@@ -1,147 +1,135 @@
-const { cmd } = require('../command');
-const axios = require('axios');
+const { cmd } = require("../command");
+const axios = require("axios");
+const config = require('../config');
+const NodeCache = require("node-cache");
 
-// --- 1. SPOTIFY SEARCH COMMAND ---
+const movieCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+
 cmd({
     pattern: "spotify",
-    desc: "Search Spotify tracks",
-    category: "downloader",
+    desc: "🎧 Search and download songs from Spotify",
+    category: "media",
     react: "🎵",
     filename: __filename
-},
-async (conn, mek, m, { from, q, reply }) => {
+}, async (conn, mek, m, { from, q }) => {
+
+    if (!q) return await conn.sendMessage(from, { text: "Use: .spotify <song name>" }, { quoted: mek });
+
     try {
-        if (!q) return reply("*Please provide a song name!*");
+        const cacheKey = `spotify_${q.toLowerCase()}`;
+        let data = movieCache.get(cacheKey);
 
-        reply("🔍 *Searching Spotify... Please wait!*");
-
-        const response = await axios.get(`https://jerrycoder.oggyapi.workers.dev/spotify?search=${encodeURIComponent(q)}`);
-        const data = response.data;
-
-        if (data.status !== "success" || !data.tracks || data.tracks.length === 0) {
-            return reply("*No songs found!*");
+        if (!data) {
+            const url = `https://jerrycoder.oggyapi.workers.dev/spotify?search=${encodeURIComponent(q)}`;
+            const res = await axios.get(url);
+            
+            data = res.data;
+            if (data.status !== "success" || !data.tracks?.length) throw new Error("No results found.");
+            movieCache.set(cacheKey, data);
         }
 
-        let txt = `🎧 *SPOTIFY SEARCH LIST* 🎧\n\n`;
-        txt += `🔎 *Search:* ${q}\n\n`;
+        const songList = data.tracks.map((s, i) => ({
+            number: i + 1,
+            title: s.trackName,
+            artist: s.artist,
+            duration: s.durationMs,
+            image: s.image,
+            url: s.spotifyUrl
+        }));
 
-        data.tracks.forEach((s, i) => {
-            txt += `*${i + 1}.* ${s.trackName}\n`;
-            txt += `👤 Artist: ${s.artist}\n`;
-            txt += `⏱️ Duration: ${s.durationMs}\n`;
-            txt += `🖼️ Img: ${s.image}\n`;
-            txt += `🔗 URL: ${s.spotifyUrl}\n\n`;
+        let textList = "🔢 𝑅𝑒𝑝𝑙𝑦 𝐵𝑒𝑙𝑜𝑤 𝑁𝑢𝑚𝑏𝑒𝑟\n━━━━━━━━━━━━━━━━━\n\n";
+        songList.forEach(s => {
+            textList += `🔸 *${s.number}. ${s.title}* - ${s.artist}\n`;
         });
 
-        txt += `*🔢 Please Reply with the number.*\n\n> *© Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
+        const sentMsg = await conn.sendMessage(from, {
+            text: `*🔍 𝐒𝐏𝐎𝐓𝐈𝐅𝐘 𝐌𝐔𝐒𝐈𝐂 𝐒𝐄𝐀𝐑𝐂𝐇 🎧*\n\n${textList}\n💬 Reply with song number to view details.\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`,
+        }, { quoted: mek });
 
-        await conn.sendMessage(from, { text: txt }, { quoted: mek });
+        const spotifyMap = new Map();
 
-    } catch (e) {
-        console.error(e);
-        reply("*Error fetching Spotify search results.*");
-    }
-});
+        const listener = async (update) => {
+            const msg = update.messages?.[0];
+            if (!msg?.message?.extendedTextMessage) return;
 
-// --- 2. REPLY LISTENER ---
-cmd({
-    on: "body"
-}, async (conn, mek, m, { body, from, reply }) => {
-    try {
-        if (!m.quoted) return;
+            const replyText = msg.message.extendedTextMessage.text.trim();
+            const repliedId = msg.message.extendedTextMessage.contextInfo?.stanzaId;
 
-        // වැදගත්: රූපයක් Quoted කළ විට caption එක පරීක්ෂා කිරීම
-        const quotedText = m.quoted.text || m.quoted.caption || m.quoted.conversation || "";
-        if (!quotedText) return;
-
-        const selection = body.trim();
-        if (isNaN(selection)) return;
-        const num = parseInt(selection);
-
-        // --- STEP 1: Track selection to Format Menu ---
-        if (quotedText.includes("SPOTIFY SEARCH LIST")) {
-            const lines = quotedText.split("\n");
-            const targetLineIndex = lines.findIndex(l => l.startsWith(`*${num}.*`));
-            if (targetLineIndex === -1) return;
-
-            const trackName = lines[targetLineIndex].split(".* ")[1].trim();
-            const artist = lines[targetLineIndex + 1].split("Artist: ")[1].trim();
-            const duration = lines[targetLineIndex + 2].split("Duration: ")[1].trim();
-            const image = lines[targetLineIndex + 3].split("Img: ")[1].trim();
-            const spotifyUrl = lines[targetLineIndex + 4].split("URL: ")[1].trim();
-
-            if (trackName && spotifyUrl) {
-                let formatMsg = `🎧 *Spotify Downloader* 📥\n\n`;
-                formatMsg += `🎵 *Track:* ${trackName}\n`;
-                formatMsg += `👤 *Artist:* ${artist}\n`;
-                formatMsg += `⏱️ *Duration:* ${duration}\n`;
-                formatMsg += `🔗 *URL:* ${spotifyUrl}\n\n`;
-                formatMsg += `*1.* 🎵 Audio (Normal)\n`;
-                formatMsg += `*2.* 📄 Document (File)\n`;
-                formatMsg += `*3.* 🎤 Voice (PTT)\n\n`;
-                formatMsg += `> *🔢 Please Reply Below Number.*`;
-
-                return await conn.sendMessage(from, { 
-                    image: { url: image }, 
-                    caption: formatMsg 
-                }, { quoted: mek });
+            if (replyText.toLowerCase() === "done") {
+                conn.ev.off("messages.upsert", listener);
+                return conn.sendMessage(from, { text: "✅ Cancelled." }, { quoted: msg });
             }
-        }
 
-        // --- STEP 2: Format selection to Download ---
-        if (quotedText.includes("Spotify Downloader")) {
-            if (![1, 2, 3].includes(num)) return;
+            if (repliedId === sentMsg.key.id) {
+                const num = parseInt(replyText);
+                const selected = songList.find(s => s.number === num);
+                if (!selected) return;
 
-            // දත්ත වෙන් කර ගැනීම
-            const trackName = quotedText.split("Track:* ")[1].split("\n")[0].trim();
-            const spotifyUrl = quotedText.split("URL:* ")[1].split("\n")[0].trim();
+                await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-            if (trackName && spotifyUrl) {
-                reply(`📥 *Downloading:* ${trackName}...`);
+                let info = 
+                    `🎧 *Spotify Downloader* 📥\n\n` +
+                    `🎵 *Track:* ${selected.title}\n` +
+                    `👤 *Artist:* ${selected.artist}\n` +
+                    `⏱️ *Duration:* ${selected.duration}\n` +
+                    `🔗 *URL:* ${selected.url}\n\n` +
+                    `🎥 *𝑺𝒆𝒍𝒆𝒄𝒕 𝑭𝒐𝒓𝒎𝒂𝒕:* 📥\n\n` +
+                    `♦️ 1. *Audio* — MP3 Format\n` +
+                    `♦️ 2. *Document* — File Format\n` +
+                    `♦️ 3. *Voice* — PTT Format\n\n` +
+                    `> 🔢 Reply with number to download.`;
 
-                const dlRes = await axios.get(`https://jerrycoder.oggyapi.workers.dev/dspotify?url=${encodeURIComponent(spotifyUrl)}`);
-                const dlData = dlRes.data;
+                const downloadMsg = await conn.sendMessage(from, {
+                    image: { url: selected.image },
+                    caption: info
+                }, { quoted: msg });
 
-                if (dlData.status === "success" && dlData.download_link) {
-                    const downloadUrl = dlData.download_link;
+                spotifyMap.set(downloadMsg.key.id, { selected });
+            }
 
-                    switch (selection) {
-                        case "1": // Normal Audio
-                            await conn.sendMessage(from, {
-                                audio: { url: downloadUrl },
-                                mimetype: "audio/mpeg",
-                                ptt: false,
-                            }, { quoted: mek });
-                            break;
+            else if (spotifyMap.has(repliedId)) {
+                const { selected } = spotifyMap.get(repliedId);
+                const num = replyText;
+                
+                await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
 
-                        case "2": // Document
-                            await conn.sendMessage(from, {
-                                document: { url: downloadUrl },
-                                mimetype: "audio/mpeg",
-                                fileName: `${trackName}.mp3`,
-                                caption: `*Spotify Download*\n🎵 ${trackName}`
-                            }, { quoted: mek });
-                            break;
+                const dlUrl = `https://jerrycoder.oggyapi.workers.dev/dspotify?url=${encodeURIComponent(selected.url)}`;
+                const dlRes = await axios.get(dlUrl);
+                const downloadLink = dlRes.data.download_link;
 
-                        case "3": // Voice (PTT)
-                            await conn.sendMessage(from, {
-                                audio: { url: downloadUrl },
-                                mimetype: "audio/mpeg",
-                                ptt: true,
-                            }, { quoted: mek });
-                            break;
-                    }
-                } else {
-                    reply("❌ *Failed to get download link!*");
+                if (!downloadLink) return;
+
+                if (num === "1") {
+                    await conn.sendMessage(from, {
+                        audio: { url: downloadLink },
+                        mimetype: "audio/mpeg",
+                        ptt: false
+                    }, { quoted: msg });
+                } 
+                else if (num === "2") {
+                    await conn.sendMessage(from, {
+                        document: { url: downloadLink },
+                        mimetype: "audio/mpeg",
+                        fileName: `${selected.title}.mp3`,
+                        caption: `*> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
+                    }, { quoted: msg });
+                } 
+                else if (num === "3") {
+                    await conn.sendMessage(from, {
+                        audio: { url: downloadLink },
+                        mimetype: "audio/mpeg",
+                        ptt: true
+                    }, { quoted: msg });
                 }
             }
-        }
+        };
 
-    } catch (e) {
-        console.log("Spotify Listener Error:", e);
+        conn.ev.on("messages.upsert", listener);
+
+    } catch (err) {
+        await conn.sendMessage(from, { text: `*Error:* ${err.message}` }, { quoted: mek });
     }
-});                
-
+});
 
 cmd({
     pattern: "spotify2",
