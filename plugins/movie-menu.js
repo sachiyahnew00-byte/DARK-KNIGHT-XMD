@@ -89,8 +89,8 @@ cmd({
                     else if (selText === '8') targetPattern = "movielovers";
                     else if (selText === '9') targetPattern = "notunmovie"; 
                     else if (selText === '10') targetPattern = "moviepro";
-                    else if (selText === '11') targetPattern = "okjatt";
-                    else if (selText === '12') targetPattern = "thenkiri";
+                    else if (selText === '11') targetPattern = "thenkiri";
+                    else if (selText === '12') targetPattern = "okjatt";
                     else if (selText === '13') targetPattern = "123mkv";
                     else if (selText === '14') targetPattern = "pupilvideo";
                     
