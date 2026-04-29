@@ -63,6 +63,8 @@ async (conn, mek, m, { from, isOwner, quoted, reply }) => {
 *🔸 5.6* 》◦ *AUTO REPLY: FALSE* ❌
 *🔸 5.7* 》◦ *MENTION REPLY: TRUE* ✅
 *🔸 5.8* 》◦ *MENTION REPLY: FALSE* ❌
+*🔸 5.9* 》◦ *CHAT BOT: TRUE* ✅
+*🔸 5.10* 》◦ *CHAT BOT: FALSE* ❌
 
 *` + "`[06] PRESENCE SETTINGS`" + `*
 *🔸 6.1* 》◦ *ALWAYS ONLINE: TRUE* ✅
@@ -138,7 +140,9 @@ async (conn, mek, m, { from, isOwner, quoted, reply }) => {
                     case '5.6': config.AUTO_REPLY = "false"; successMsg = "Auto Reply: OFF"; break;
                     case '5.7': config.MENTION_REPLY = "true"; successMsg = "Mention Reply: ON"; break;
                     case '5.8': config.MENTION_REPLY = "false"; successMsg = "Mention Reply: OFF"; break;
-
+                    case '5.9': config.CHAT_BOT = "true"; successMsg = "Chat Bot: ON"; break;
+                    case '5.10': config.CHAT_BOT = "false"; successMsg = "Chat Bot: OFF"; break;
+                    
                     case '6.1': config.ALWAYS_ONLINE = "true"; successMsg = "Always Online: ON"; break;
                     case '6.2': config.ALWAYS_ONLINE = "false"; successMsg = "Always Online: OFF"; break;
                     case '6.3': config.AUTO_TYPING = "true"; successMsg = "Auto Typing: ON"; break;
