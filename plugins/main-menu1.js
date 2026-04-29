@@ -54,6 +54,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★╭──────────────
 ┃★│ • ai
 ┃★│ • gpt
+┃★│ • gemini
 ┃★│ • venice
 ┃★│ • copilot
 ┃★│ • copilot2
@@ -299,46 +300,6 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
-╭━━〔 🎨 *Logo Menu* 〕━━┈⊷
-┃★╭──────────────
-┃★│ • 3dcomic
-┃★│ • 3dpaper
-┃★│ • america
-┃★│ • angelwings
-┃★│ • bear
-┃★│ • bulb
-┃★│ • boom
-┃★│ • birthday
-┃★│ • blackpink
-┃★│ • cat
-┃★│ • clouds
-┃★│ • castle
-┃★│ • deadpool
-┃★│ • dragonball
-┃★│ • devilwings
-┃★│ • eraser
-┃★│ • frozen
-┃★│ • futuristic
-┃★│ • galaxy
-┃★│ • hacker
-┃★│ • leaf
-┃★│ • luxury
-┃★│ • naruto
-┃★│ • nigeria
-┃★│ • neonlight
-┃★│ • paint
-┃★│ • pornhub
-┃★│ • sans
-┃★│ • sunset
-┃★│ • sadgirl
-┃★│ • thor
-┃★│ • tatoo
-┃★│ • typography
-┃★│ • valorant
-┃★│ • zodiac
-┃★╰──────────────
-╰━━━━━━━━━━━━━━┈⊷
-
 ╭━━〔 🏠 *Main Menu* 〕━━┈⊷
 ┃★╭──────────────
 ┃★│ • alive
@@ -358,6 +319,8 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • bible
 ┃★│ • biblelist
 ┃★│ • logomenu
+┃★│ • logo
+┃★│ • settings 
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
@@ -384,6 +347,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 
 ╭━━〔 👑 *Owner Menu* 〕━━┈⊷
 ┃★╭──────────────
+┃★│ • prefix
 ┃★│ • anticall
 ┃★│ • antilink
 ┃★│ • antidelete
@@ -462,37 +426,6 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • ytpost
 ┃★│ • ytstalk
 ┃★│ • weather
-┃★╰──────────────
-╰━━━━━━━━━━━━━━┈⊷
-
-╭━━〔 ⚙️ *Setting Menu* 〕━━┈⊷
-┃★╭──────────────      
-┃★│ • mode pravite/inbox/public
-┃★│ • setprefix !,@,#,$,/ 
-┃★│ • admin-events on/off
-┃★│ • welcome on/off
-┃★│ • auto-typing on/off
-┃★│ • mention-reply on/off
-┃★│ • always-online on/off
-┃★│ • auto-recoding on/off
-┃★│ • auto-seen on/off
-┃★│ • status-react on/off
-┃★│ • read-messages on/off 
-┃★│ • auto-voice on/off
-┃★│ • auto-reply on/off
-┃★│ • auto-sticker on/off
-┃★│ • auto-react on/off
-┃★│ • status-reply on/off
-┃★│ • anti-bad on/off
-┃★│ • antilink on/off
-┃★│ • antikick on/off
-┃★│ • kicklink on/off
-┃★│ • deletelink on/off
-┃★│ • antibad on/off
-┃★│ • antidelete on/off
-┃★│ • anticall on/off
-┃★│ • heartreact on/off
-┃★│ • .use on/off
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`;
