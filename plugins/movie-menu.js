@@ -56,8 +56,10 @@ cmd({
  8️⃣ 𝑴𝑶𝑽𝑰𝑬𝑳𝑶𝑽𝑬𝑹𝑺 𝑆𝐸𝐴𝐑𝐶𝐻
  9️⃣ 𝑵𝑶𝑻𝑼𝑵𝑴𝑶𝑽𝑰𝑬 𝑆𝐸𝐴𝐑𝐶𝐻
  🔟 𝐌𝐎𝐕𝐈𝐄𝐏𝐑𝐎 𝑆𝐸𝐴𝐑𝐶𝐻
-1️⃣1️⃣ 123𝐌𝐊𝐕 𝑆𝐸𝐴𝐑𝐶𝐻
-1️⃣2️⃣ 𝐏𝐔𝐏𝐈𝐋𝐕𝐈𝐃𝐄𝐎 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣1️⃣ 𝐓𝐇𝐄𝐍𝐊𝐈𝐑𝐈 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣2️⃣ 𝐎𝐊𝐉𝐀𝐓𝐓 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣3️⃣ 123𝐌𝐊𝐕 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣4️⃣ 𝐏𝐔𝐏𝐈𝐋𝐕𝐈𝐃𝐄𝐎 𝑆𝐸𝐴𝐑𝐶𝐻
  
  > Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳
  `;
@@ -87,8 +89,10 @@ cmd({
                     else if (selText === '8') targetPattern = "movielovers";
                     else if (selText === '9') targetPattern = "notunmovie"; 
                     else if (selText === '10') targetPattern = "moviepro";
-                    else if (selText === '11') targetPattern = "123mkv";
-                    else if (selText === '12') targetPattern = "pupilvideo";
+                    else if (selText === '11') targetPattern = "okjatt";
+                    else if (selText === '12') targetPattern = "thenkiri";
+                    else if (selText === '13') targetPattern = "123mkv";
+                    else if (selText === '14') targetPattern = "pupilvideo";
                     
                     if (targetPattern) {
                         await conn.sendMessage(from, { react: { text: "🔍", key: selection.msg.key } });
