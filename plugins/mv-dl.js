@@ -308,6 +308,7 @@ cmd({
             const res = await axios.get(url);
             
             data = res.data;
+  
             if (!data.data?.items?.length) throw new Error("No results found.");
             movieCache.set(cacheKey, data);
         }
@@ -358,7 +359,7 @@ cmd({
                 const movieUrl = `https://silent-movies-api.vercel.app/api/media?id=${selected.id}&key=silent`;
                 const movieRes = await axios.get(movieUrl);
                 
-                const downloads = movieRes.data?.data?.data?.downloadUrls || movieRes.data?.data?.downloadUrls;
+                const downloads = movieRes.data?.data?.data?.downloadUrls;
 
                 if (!downloads || !Array.isArray(downloads) || downloads.length === 0) {
                     return conn.sendMessage(from, { text: "No download links available for this movie." }, { quoted: msg });
@@ -399,7 +400,7 @@ cmd({
                 const sizeGB = sizeInBytes / (1024 * 1024 * 1024);
 
                 if (sizeGB > 2) {
-                    return conn.sendMessage(from, { text: `⚠️ Large file (${sizeGB.toFixed(2)} GB). Please use direct link:\n${chosen.downloadUrl}` }, { quoted: msg });
+                    return conn.sendMessage(from, { text: `⚠️ Large file (${sizeGB.toFixed(2)} GB)` }, { quoted: msg });
                 }
 
                 await conn.sendMessage(from, {
@@ -416,7 +417,7 @@ cmd({
     } catch (err) {
         await conn.sendMessage(from, { text: `*Error:* ${err.message}` }, { quoted: mek });
     }
-});    
+});
         
 cmd({
   pattern: "123mkv",
