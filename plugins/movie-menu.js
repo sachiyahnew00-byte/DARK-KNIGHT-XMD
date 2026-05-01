@@ -52,13 +52,12 @@ cmd({
  4️⃣ 𝑩𝑨𝑰𝑺𝑬𝑪𝑶𝑷𝑬 𝑆𝐸𝐴𝐑𝐶𝐻 
  5️⃣ 𝑺𝑼𝑩𝒁𝑳𝑲 𝑆𝐸𝐴𝐑𝐶𝐻
  6️⃣ 𝑴𝑶𝑽𝑰𝑬𝑺𝑼𝑩𝑳𝑲 𝑆𝐸𝐴𝐑𝐶𝐻  
- 7️⃣ 𝐌𝐎𝐕𝐈𝐄𝐏𝐑𝐎 𝑆𝐸𝐴𝐑𝐶𝐻  
- 8️⃣ 𝑴𝑶𝑽𝑰𝑬𝑳𝑶𝑽𝑬𝑹𝑺 𝑆𝐸𝐴𝐑𝐶𝐻
- 9️⃣ 𝑵𝑶𝑻𝑼𝑵𝑴𝑶𝑽𝑰𝑬 𝑆𝐸𝐴𝐑𝐶𝐻
- 🔟 123𝐌𝐊𝐕 𝑆𝐸𝐴𝐑𝐶𝐻
-1️⃣1️⃣ 𝐓𝐇𝐄𝐍𝐊𝐈𝐑𝐈 𝑆𝐸𝐴𝐑𝐶𝐻
-1️⃣2️⃣ 𝐎𝐊𝐉𝐀𝐓𝐓 𝑆𝐸𝐴𝐑𝐶𝐻
-1️⃣3️⃣ 𝐏𝐔𝐏𝐈𝐋𝐕𝐈𝐃𝐄𝐎 𝑆𝐸𝐴𝐑𝐶𝐻
+ 7️⃣ 𝑴𝑶𝑽𝑰𝑬𝑳𝑶𝑽𝑬𝑹𝑺 𝑆𝐸𝐴𝐑𝐶𝐻
+ 8️⃣ 𝑵𝑶𝑻𝑼𝑵𝑴𝑶𝑽𝑰𝑬 𝑆𝐸𝐴𝐑𝐶𝐻
+ 9️⃣ 𝐓𝐇𝐄𝐍𝐊𝐈𝐑𝐈 𝑆𝐸𝐴𝐑𝐶𝐻
+ 🔟 𝐎𝐊𝐉𝐀𝐓𝐓 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣1️⃣ 123𝐌𝐊𝐕 𝑆𝐸𝐴𝐑𝐶𝐻
+1️⃣2️⃣ 𝐏𝐔𝐏𝐈𝐋𝐕𝐈𝐃𝐄𝐎 𝑆𝐸𝐴𝐑𝐶𝐻
  
  © Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳
  `;
@@ -84,13 +83,12 @@ cmd({
                     else if (selText === '4') targetPattern = "baiscope";
                     else if (selText === '5') targetPattern = "subzlk";
                     else if (selText === '6') targetPattern = "moviesublk";
-                    else if (selText === '7') targetPattern = "moviepro";
-                    else if (selText === '8') targetPattern = "movielovers";
-                    else if (selText === '9') targetPattern = "notunmovie"; 
-                    else if (selText === '10') targetPattern = "123mkv";
-                    else if (selText === '11') targetPattern = "thenkiri";
-                    else if (selText === '12') targetPattern = "okjatt";
-                    else if (selText === '13') targetPattern = "pupilvideo";
+                    else if (selText === '7') targetPattern = "movielovers";
+                    else if (selText === '8') targetPattern = "notunmovie";
+                    else if (selText === '9') targetPattern = "thenkiri"; 
+                    else if (selText === '10') targetPattern = "okjatt";
+                    else if (selText === '11') targetPattern = "123mkv";
+                    else if (selText === '12') targetPattern = "pupilvideo";
                     
                     if (targetPattern) {
                         await conn.sendMessage(from, { react: { text: "🔍", key: selection.msg.key } });
