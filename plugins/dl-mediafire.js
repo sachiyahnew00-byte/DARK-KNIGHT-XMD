@@ -19,7 +19,7 @@ cmd({
     await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
     // Build the API URL
-    const apiUrl = `https://ominisave.vercel.app/api/mfire?url=${encodeURIComponent(q)}`;
+    const apiUrl = `https://www.ominisave.store/api/mfire?url=${encodeURIComponent(q)}`;
 
     // Fetch from API
     const { data } = await axios.get(apiUrl);
