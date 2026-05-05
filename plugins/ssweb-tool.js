@@ -1,5 +1,5 @@
 const axios = require("axios");
-const config = require('../settings');
+const config = require('../config');
 const { cmd } = require('../command');
 
 cmd({
