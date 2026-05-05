@@ -16,7 +16,7 @@ async (conn, mek, m, { from, q, reply }) => {
         await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
         // New API endpoint
-        const apiUrl = `https://malvin-api.vercel.app/search/playstore?q=${encodeURIComponent(q)}`;
+        const apiUrl = `https://api.malvin.gleeze.com/search/playstore?q=${encodeURIComponent(q)}&apikey=mvn_c2faaeeccbfd38b5c21c08e5d60f4db8`;
         const response = await axios.get(apiUrl);
 
         if (!response.data || !response.data.result || response.data.result.length === 0) {
