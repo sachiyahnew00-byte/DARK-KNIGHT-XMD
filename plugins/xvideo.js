@@ -5,7 +5,7 @@ const tharuzz_footer = "> Powerd by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-�
 
 cmd(
     {
-        pattern: "xnxx",
+        pattern: "xvideo",
         use: ".xnxx <xnxx video name>",
         react: "🔞",
         desc: "Search and download xnxx.com 18+ videos.",
@@ -37,7 +37,7 @@ cmd(
                 await reply("No result found you enter xnxx video name.")
             }
             
-            let list = "🔍 Xnxx Search Results.🔞\n\n🔢 *Reply Below Number.*\n\n";
+            let list = "🔍 Xvideo Search Results.🔞\n\n🔢 *Reply Below Number.*\n\n";
             
             xnxxSearchapi.result.xvideos.forEach((xnxx, i) => {
             list += `*\`${i + 1}\` | | ${xnxx.title || "No title"}*\n`;
@@ -62,11 +62,9 @@ cmd(
               const chosen = xnxxSearchapi.result.xvideos[index];
               
               const xnxxDownloadapi = await fetchJson(`https://tharuzz-ofc-api-v2.vercel.app/api/download/xvdl?url=${chosen.link}`);
-              
+
               const infoMap = xnxxDownloadapi?.result;
-              
               const downloadUrllow = xnxxDownloadapi?.result?.dl_Links?.lowquality;
-              
               const downloadUrlhigh = xnxxDownloadapi?.result?.dl_Links?.highquality;
               
               const askType = await conn.sendMessage(
@@ -126,7 +124,7 @@ cmd(
 
 cmd(
     {
-        pattern: "xvideo",
+        pattern: "xnxx",
         use: ".xvideo <video name>",
         react: "🔞",
         desc: "Search and download xnxx.com 18+ videos.",
@@ -147,13 +145,13 @@ cmd(
 
             // Search API
             const searchRes = await fetchJson(
-                `https://api-aswin-sparky.koyeb.app/api/search/xnxx?search=${encodeURIComponent(q)}`
+                `https://supun-x-apis.vercel.app/search/xnxx?q=${encodeURIComponent(q)}`
             );
 
             const results = searchRes?.result?.result;
             if (!results || results.length === 0) return await reply("😔 No results found.");
 
-            let list = "🔍 *Xvideo Search Results* 🔞\n\n🔢 *Reply Below Number.*\n\n";
+            let list = "🔍 *Xnxx Search Results* 🔞\n\n🔢 *Reply Below Number.*\n\n";
             results.forEach((vid, i) => {
                 list += `*\`${i + 1}\` | | ${vid.title || "No title"}*\n`;
             });
@@ -184,7 +182,7 @@ cmd(
 
                 // Download API
                 const dlRes = await fetchJson(
-                    `https://api-aswin-sparky.koyeb.app/api/downloader/xnxx?url=${encodeURIComponent(
+                    `https://supun-x-apis.vercel.app/download/xnxx?url=${encodeURIComponent(
                         chosen.link
                     )}`
                 );
