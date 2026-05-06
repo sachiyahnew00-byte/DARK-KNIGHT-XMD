@@ -11,7 +11,8 @@ cmd({
   react: "📢",
   category: "group",
   description: "Send text or quoted media to group status. Owner only.",
-  function: async (conn, mek, m, { from, isGroup, isOwner, text: q, reply }) => {
+  },
+async (conn, mek, m, { from, isGroup, isOwner, q, reply }) => {
 
     // 1. Group සහ Owner පරීක්ෂා කිරීම
     if (!isGroup) return reply("❌ Group only command!")
