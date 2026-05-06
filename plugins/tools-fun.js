@@ -306,7 +306,7 @@ cmd({
 });
 
 cmd({
-  pattern: "send",
+  pattern: "sends",
   desc: "Send a message multiple times, one by one.",
   category: "fun",
   filename: __filename
