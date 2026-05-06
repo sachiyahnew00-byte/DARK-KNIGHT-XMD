@@ -1,132 +1,122 @@
-const { cmd } = require('../command');
-/*const { downloadMediaMessage } = require('./lib');
-const ffmpeg = require('fluent-ffmpeg');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+const { cmd, commands } = require('../command')
+const { downloadContentFromMessage } = require('@whiskeysockets/baileys')
+const ffmpeg = require('fluent-ffmpeg')
+const fs = require('fs')
+const path = require('path')
+const os = require('os')
+
+// Helper: download media function
+const downloadMedia = async (message, type) => {
+    const stream = await downloadContentFromMessage(message, type)
+    let buffer = Buffer.from([])
+    for await (const chunk of stream) {
+        buffer = Buffer.concat([buffer, chunk])
+    }
+    return buffer
+}
 
 cmd({
-  pattern: "togroupstatus",
-  alias: ["groupstatus", "statusgroup", "togcstatus"],
-  react: "📢",
-  category: "group",
-  description: "Send text or quoted media to group status. Owner only.",
-  },
-async (conn, mek, m, { from, isGroup, isOwner, q, reply }) => {
+    pattern: "togroupstatus",
+    alias: ["groupstatus", "statusgroup", "togcstatus"],
+    react: "📢",
+    category: "group",
+    description: "Send text or quoted media to group status. Owner only.",
+    filename: __filename
+},
+async (conn, mek, m, { from, isGroup, isOwner, text: q, reply }) => {
 
-    // 1. Group සහ Owner පරීක්ෂා කිරීම
     if (!isGroup) return reply("❌ Group only command!")
     if (!isOwner) return reply("❌ Owner Only Command!")
 
-    const quoted = m.quoted ? m.quoted : mek.message?.extendedTextMessage?.contextInfo?.quotedMessage
+    const quoted = mek.message?.extendedTextMessage?.contextInfo?.quotedMessage
+    const quotedParticipant = mek.message?.extendedTextMessage?.contextInfo?.participant
+
     const hasQuoted = !!quoted
 
-    // 2. භාවිතය පිළිබඳ උපදෙස්
     if (!q && !hasQuoted) {
-      return reply(
-        `📌 *Usage:*\n` +
-        `• .groupstatus <text>\n` +
-        `• Reply to image/video/audio with .groupstatus <caption>\n` +
-        `• Or just .groupstatus to forward quoted media`
-      )
+        return reply(
+            `📌 *Usage:*\n` +
+            `• .togroupstatus <text>\n` +
+            `• Reply to image/video/audio with .togroupstatus <caption>\n` +
+            `• Or just .togroupstatus to forward quoted media`
+        )
     }
 
-    // 3. Text Status සඳහා Random Colors සහ Fonts
-    const colors = ['#128C7E', '#075E54', '#34B7F1', '#25D366', '#FF2E63', '#607D8B', '#000000', '#7E57C2', '#FF9800', '#F44336']
-    const randomColor = colors[Math.floor(Math.random() * colors.length)]
-    const randomFont = Math.floor(Math.random() * 5) + 1
-
-    // Helper: Video conversion (ffmpeg)
+    // Helper: format video buffer to mp4 using ffmpeg
     const formatVideo = (buffer) => new Promise((resolve, reject) => {
-      const tmpIn = path.join(os.tmpdir(), `vin_${Date.now()}.mp4`)
-      const tmpOut = path.join(os.tmpdir(), `vout_${Date.now()}.mp4`)
-      fs.writeFileSync(tmpIn, buffer)
-      ffmpeg(tmpIn)
-        .outputOptions(['-c:v libx264', '-c:a aac', '-movflags +faststart', '-pix_fmt yuv420p'])
-        .save(tmpOut)
-        .on('end', () => { 
-            const data = fs.readFileSync(tmpOut)
-            fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut)
-            resolve(data) 
-        })
-        .on('error', reject)
+        const tmpIn = path.join(os.tmpdir(), `vin_${Date.now()}.mp4`)
+        const tmpOut = path.join(os.tmpdir(), `vout_${Date.now()}.mp4`)
+        fs.writeFileSync(tmpIn, buffer)
+        ffmpeg(tmpIn)
+            .outputOptions(['-c:v libx264', '-c:a aac', '-movflags +faststart'])
+            .save(tmpOut)
+            .on('end', () => { resolve(fs.readFileSync(tmpOut)); fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut) })
+            .on('error', reject)
     })
 
-    // Helper: Audio conversion (ffmpeg)
+    // Helper: format audio buffer to mp4/aac using ffmpeg
     const formatAudio = (buffer) => new Promise((resolve, reject) => {
-      const tmpIn = path.join(os.tmpdir(), `ain_${Date.now()}.ogg`)
-      const tmpOut = path.join(os.tmpdir(), `aout_${Date.now()}.mp4`)
-      fs.writeFileSync(tmpIn, buffer)
-      ffmpeg(tmpIn)
-        .outputOptions(['-c:a aac', '-vn'])
-        .save(tmpOut)
-        .on('end', () => { 
-            const data = fs.readFileSync(tmpOut)
-            fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut)
-            resolve(data) 
-        })
-        .on('error', reject)
+        const tmpIn = path.join(os.tmpdir(), `ain_${Date.now()}.ogg`)
+        const tmpOut = path.join(os.tmpdir(), `aout_${Date.now()}.mp4`)
+        fs.writeFileSync(tmpIn, buffer)
+        ffmpeg(tmpIn)
+            .outputOptions(['-c:a aac'])
+            .save(tmpOut)
+            .on('end', () => { resolve(fs.readFileSync(tmpOut)); fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut) })
+            .on('error', reject)
     })
 
     try {
-      let statusPayload = {}
+        let statusPayload = {}
 
-      if (hasQuoted) {
-        const quotedMsg = { message: quoted }
-        const mime = (m.quoted?.msg || m.quoted)?.mimetype || ''
+        if (hasQuoted) {
+            if (quoted?.imageMessage) {
+                const caption = q || quoted.imageMessage.caption || ""
+                const buffer = await downloadMedia(quoted.imageMessage, 'image')
+                statusPayload = { image: buffer, mimetype: "image/jpeg" }
+                if (caption) statusPayload.caption = caption
 
-        // 🖼️ රූප සටහන් (Images)
-        if (/image/.test(mime)) {
-          const buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
-          statusPayload = { image: buffer, caption: q || m.quoted.text || "" }
+            } else if (quoted?.videoMessage) {
+                const caption = q || quoted.videoMessage.caption || ""
+                let buffer = await downloadMedia(quoted.videoMessage, 'video')
+                buffer = await formatVideo(buffer)
+                statusPayload = { video: buffer, mimetype: "video/mp4" }
+                if (caption) statusPayload.caption = caption
 
-        // 🎥 වීඩියෝ (Videos)
-        } else if (/video/.test(mime)) {
-          let buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
-          buffer = await formatVideo(buffer)
-          statusPayload = { video: buffer, mimetype: "video/mp4", caption: q || m.quoted.text || "" }
+            } else if (quoted?.audioMessage) {
+                let buffer = await downloadMedia(quoted.audioMessage, 'audio')
+                buffer = await formatAudio(buffer)
+                statusPayload = { audio: buffer, mimetype: "audio/mp4", ptt: true }
 
-        // 🎵 ශ්‍රව්‍ය (Audio/Voice)
-        } else if (/audio/.test(mime)) {
-          let buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
-          buffer = await formatAudio(buffer)
-          statusPayload = { audio: buffer, mimetype: "audio/mp4" }
+            } else if (quoted?.conversation || quoted?.extendedTextMessage?.text) {
+                statusPayload.text = quoted.conversation || quoted.extendedTextMessage.text
 
-        // ✍️ Quoted Text
-        } else if (m.quoted.text || m.quoted.conversation) {
-          statusPayload = {
-            text: q || m.quoted.text || m.quoted.conversation,
-            backgroundColor: randomColor,
-            font: randomFont
-          }
+            } else {
+                return reply("❌ Unsupported media type for group status.")
+            }
+
+            if (q && !statusPayload.caption && !statusPayload.text) {
+                statusPayload.caption = q
+            }
         } else {
-          return reply("❌ Unsupported media type for status.")
+            statusPayload.text = q
         }
-      } else {
-        // ✍️ Direct Text
-        statusPayload = {
-            text: q,
-            backgroundColor: randomColor,
-            font: randomFont
-        }
-      }
 
-      // 4. Status Broadcast වෙත පණිවිඩය යැවීම
-      await conn.sendMessage('status@broadcast', statusPayload, {
-        statusJidList: [from]
-      })
+        // Send as status to group
+        await conn.sendMessage('status@broadcast', statusPayload, {
+            statusJidList: [from]
+        })
 
-      // 5. අවසන් ප්‍රතිචාරය
-      await m.react("✅")
-      return reply("✅ Status uploaded successfully!")
+        // මෙතනින් Reaction එක සහ Success Message එක යවයි
+        await m.react("✅")
+        reply("✅ *Status Uploaded Successfully.*")
 
     } catch (error) {
-      console.error("togroupstatus error:", error)
-      await m.react("❌")
-      return reply(`❌ Error: ${error.message}`)
+        console.error("togroupstatus error:", error)
+        await m.react("❌")
+        return reply(`❌ Error sending group status: ${error.message}`)
     }
-  }
-})*/
+})
 
 
 cmd({
