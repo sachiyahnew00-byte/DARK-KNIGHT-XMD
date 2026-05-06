@@ -13,44 +13,57 @@ cmd({
   description: "Send text or quoted media to group status. Owner only.",
   function: async (conn, mek, m, { from, isGroup, isOwner, text: q, reply }) => {
 
+    // 1. Group සහ Owner පරීක්ෂා කිරීම
     if (!isGroup) return reply("❌ Group only command!")
     if (!isOwner) return reply("❌ Owner Only Command!")
 
-    const quoted = mek.message?.extendedTextMessage?.contextInfo?.quotedMessage
-    const quotedParticipant = mek.message?.extendedTextMessage?.contextInfo?.participant
-
+    const quoted = m.quoted ? m.quoted : mek.message?.extendedTextMessage?.contextInfo?.quotedMessage
     const hasQuoted = !!quoted
 
+    // 2. භාවිතය පිළිබඳ උපදෙස්
     if (!q && !hasQuoted) {
       return reply(
         `📌 *Usage:*\n` +
-        `• .togroupstatus <text>\n` +
-        `• Reply to image/video/audio with .togroupstatus <caption>\n` +
-        `• Or just .togroupstatus to forward quoted media`
+        `• .groupstatus <text>\n` +
+        `• Reply to image/video/audio with .groupstatus <caption>\n` +
+        `• Or just .groupstatus to forward quoted media`
       )
     }
 
-    // Helper: format video buffer to mp4 using ffmpeg
+    // 3. Text Status සඳහා Random Colors සහ Fonts
+    const colors = ['#128C7E', '#075E54', '#34B7F1', '#25D366', '#FF2E63', '#607D8B', '#000000', '#7E57C2', '#FF9800', '#F44336']
+    const randomColor = colors[Math.floor(Math.random() * colors.length)]
+    const randomFont = Math.floor(Math.random() * 5) + 1
+
+    // Helper: Video conversion (ffmpeg)
     const formatVideo = (buffer) => new Promise((resolve, reject) => {
       const tmpIn = path.join(os.tmpdir(), `vin_${Date.now()}.mp4`)
       const tmpOut = path.join(os.tmpdir(), `vout_${Date.now()}.mp4`)
       fs.writeFileSync(tmpIn, buffer)
       ffmpeg(tmpIn)
-        .outputOptions(['-c:v libx264', '-c:a aac', '-movflags +faststart'])
+        .outputOptions(['-c:v libx264', '-c:a aac', '-movflags +faststart', '-pix_fmt yuv420p'])
         .save(tmpOut)
-        .on('end', () => { resolve(fs.readFileSync(tmpOut)); fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut) })
+        .on('end', () => { 
+            const data = fs.readFileSync(tmpOut)
+            fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut)
+            resolve(data) 
+        })
         .on('error', reject)
     })
 
-    // Helper: format audio buffer to mp4/aac using ffmpeg
+    // Helper: Audio conversion (ffmpeg)
     const formatAudio = (buffer) => new Promise((resolve, reject) => {
       const tmpIn = path.join(os.tmpdir(), `ain_${Date.now()}.ogg`)
       const tmpOut = path.join(os.tmpdir(), `aout_${Date.now()}.mp4`)
       fs.writeFileSync(tmpIn, buffer)
       ffmpeg(tmpIn)
-        .outputOptions(['-c:a aac'])
+        .outputOptions(['-c:a aac', '-vn'])
         .save(tmpOut)
-        .on('end', () => { resolve(fs.readFileSync(tmpOut)); fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut) })
+        .on('end', () => { 
+            const data = fs.readFileSync(tmpOut)
+            fs.unlinkSync(tmpIn); fs.unlinkSync(tmpOut)
+            resolve(data) 
+        })
         .on('error', reject)
     })
 
@@ -59,49 +72,57 @@ cmd({
 
       if (hasQuoted) {
         const quotedMsg = { message: quoted }
+        const mime = (m.quoted?.msg || m.quoted)?.mimetype || ''
 
-        if (quoted?.imageMessage) {
-          const caption = q || quoted.imageMessage.caption || ""
+        // 🖼️ රූප සටහන් (Images)
+        if (/image/.test(mime)) {
           const buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
-          statusPayload = { image: buffer, mimetype: "image/jpeg" }
-          if (caption) statusPayload.caption = caption
+          statusPayload = { image: buffer, caption: q || m.quoted.text || "" }
 
-        } else if (quoted?.videoMessage) {
-          const caption = q || quoted.videoMessage.caption || ""
+        // 🎥 වීඩියෝ (Videos)
+        } else if (/video/.test(mime)) {
           let buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
           buffer = await formatVideo(buffer)
-          statusPayload = { video: buffer, mimetype: "video/mp4" }
-          if (caption) statusPayload.caption = caption
+          statusPayload = { video: buffer, mimetype: "video/mp4", caption: q || m.quoted.text || "" }
 
-        } else if (quoted?.audioMessage) {
+        // 🎵 ශ්‍රව්‍ය (Audio/Voice)
+        } else if (/audio/.test(mime)) {
           let buffer = await downloadMediaMessage(quotedMsg, "buffer", {})
           buffer = await formatAudio(buffer)
-          statusPayload = { audio: buffer, mimetype: "audio/mp4", ptt: true }
+          statusPayload = { audio: buffer, mimetype: "audio/mp4" }
 
-        } else if (quoted?.conversation || quoted?.extendedTextMessage?.text) {
-          statusPayload.text = quoted.conversation || quoted.extendedTextMessage.text
-
+        // ✍️ Quoted Text
+        } else if (m.quoted.text || m.quoted.conversation) {
+          statusPayload = {
+            text: q || m.quoted.text || m.quoted.conversation,
+            backgroundColor: randomColor,
+            font: randomFont
+          }
         } else {
-          return reply("❌ Unsupported media type for group status.")
-        }
-
-        if (q && !statusPayload.caption && !statusPayload.text) {
-          statusPayload.caption = q
+          return reply("❌ Unsupported media type for status.")
         }
       } else {
-        statusPayload.text = q
+        // ✍️ Direct Text
+        statusPayload = {
+            text: q,
+            backgroundColor: randomColor,
+            font: randomFont
+        }
       }
 
-      // Send as status to group
+      // 4. Status Broadcast වෙත පණිවිඩය යැවීම
       await conn.sendMessage('status@broadcast', statusPayload, {
         statusJidList: [from]
       })
 
+      // 5. අවසන් ප්‍රතිචාරය
       await m.react("✅")
+      return reply("✅ Status uploaded successfully!")
+
     } catch (error) {
       console.error("togroupstatus error:", error)
       await m.react("❌")
-      return reply(`❌ Error sending group status: ${error.message}`)
+      return reply(`❌ Error: ${error.message}`)
     }
   }
 })
