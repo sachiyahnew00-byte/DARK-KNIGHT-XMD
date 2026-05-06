@@ -126,7 +126,7 @@ async function getKickableMembers(conn, chatId) {
 
 cmd({
     pattern: "kickall",
-    alias: ["removeall", "cleargroup"],
+    alias: ["removeall2", "cleargroup"],
     desc: "Remove all members at once (Bot Owner Only)",
     category: "owner",
     react: "⚠️",
@@ -175,7 +175,7 @@ async (Void, citel, text) => {
 
 cmd({
     pattern: "removemembers",
-    alias: ["kickall"],
+    alias: ["kickall1"],
     desc: "Remove all non-admin members from the group.",
     react: "🎉",
     category: "group",
@@ -229,7 +229,7 @@ async (conn, mek, m, {
  
 cmd({
     pattern: "removeadmins",
-    alias: ["kickall1"],
+    alias: ["kickall2"],
     desc: "Remove all admin members from the group, excluding the bot and bot owner.",
     react: "🎉",
     category: "group",
@@ -282,8 +282,8 @@ async (conn, mek, m, {
 // remove admins and memeber both
 
 cmd({
-    pattern: "removeall2",
-    alias: ["kickall2"],
+    pattern: "removeall",
+    alias: ["kickall3"],
     desc: "Remove all members and admins from the group, excluding the bot and bot owner.",
     react: "🎉",
     category: "group",
