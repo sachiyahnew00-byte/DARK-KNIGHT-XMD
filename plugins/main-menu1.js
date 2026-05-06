@@ -163,6 +163,8 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • nikal
 ┃★│ • hack
 ┃★│ • msg
+┃★│ • sends 
+┃★│ • repeat
 ┃★│ • aura
 ┃★│ • 8ball
 ┃★│ • boy
@@ -172,7 +174,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • compliment
 ┃★│ • dare
 ┃★│ • emoji
-┃★│ • fack
+┃★│ • fact
 ┃★│ • flip
 ┃★│ • flirt
 ┃★│ • friend
@@ -183,7 +185,6 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • quote
 ┃★│ • rate
 ┃★│ • roll
-┃★│ • repeat
 ┃★│ • ship
 ┃★│ • shapar
 ┃★│ • turth
@@ -208,8 +209,9 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • join
 ┃★│ • kick
 ┃★│ • kickall
-┃★│ • kickall1
-┃★│ • kickall2
+┃★│ • removeall
+┃★│ • removemembers
+┃★│ • removeadmins
 ┃★│ • leave
 ┃★│ • glink
 ┃★│ • lock 
