@@ -73,10 +73,9 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ╭━━〔 🔄 *Convert Menu* 〕━━┈⊷
 ┃★╭────────────── 
 ┃★│ • attp
+┃★│ • caption
 ┃★│ • brat
 ┃★│ • aivoice
-┃★│ • convert
-┃★│ • enhance
 ┃★│ • binary
 ┃★│ • dbinary
 ┃★│ • base64
@@ -84,8 +83,10 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • fetch
 ┃★│ • recolor
 ┃★│ • readmore
-┃★│ • stake
 ┃★│ • sticker
+┃★│ • stake
+┃★│ • stoimg
+┃★│ • gsticker
 ┃★│ • tiny
 ┃★│ • tourl
 ┃★│ • img2url
@@ -98,8 +99,6 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • translate
 ┃★│ • urlencode
 ┃★│ • urldecode
-┃★│ • vsticker
-┃★│ • Wikipedia
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
@@ -204,6 +203,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • demote
 ┃★│ • ginfo
 ┃★│ • gstates
+┃★│ • groupstatus
 ┃★│ • hidetag
 ┃★│ • tagall
 ┃★│ • join
@@ -262,6 +262,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • getvideo
 ┃★│ • imgscan
 ┃★│ • image
+┃★│ • remini
 ┃★│ • topixel
 ┃★│ • adedit
 ┃★│ • bluredit
@@ -322,7 +323,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • biblelist
 ┃★│ • logomenu
 ┃★│ • logo
-┃★│ • settings 
+┃★│ • setting
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
@@ -331,19 +332,13 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • date
 ┃★│ • count
 ┃★│ • countx
-┃★│ • caption
-┃★│ • createapi
 ┃★│ • calculate
+┃★│ • createapi
 ┃★│ • get
 ┃★│ • gpass
-┃★│ • ssweb
-┃★│ • person
+┃★│ • sss
 ┃★│ • timenow
 ┃★│ • timezone
-┃★│ • tempnumber
-┃★│ • tempmail
-┃★│ • vcc
-┃★│ • webinfo
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
@@ -388,14 +383,14 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • groupsprivacy
 ┃★│ • getprivacy
 ┃★│ • savecontact
-┃★│ • setting
+┃★│ • settings
 ┃★│ • jid
 ┃★│ • jid2
 ┃★│ • gjid
 ┃★│ • forward
 ┃★│ • fwd2
 ┃★│ • send
-┃★│ • persion
+┃★│ • person
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 
@@ -419,15 +414,20 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
 ┃★│ • news2
 ┃★│ • mvdetail
 ┃★│ • praytime
-┃★│ • sss
+┃★│ • ssweb
 ┃★│ • srepo
 ┃★│ • stickers
 ┃★│ • ttstalk
 ┃★│ • twtstalk
+┃★│ • tempnumber
+┃★│ • tempmail
+┃★│ • vcc
 ┃★│ • yts
 ┃★│ • ytpost
 ┃★│ • ytstalk
+┃★│ • webinfo
 ┃★│ • weather
+┃★│ • Wikipedia
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`;
