@@ -44,7 +44,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
     await conn.sendMessage(from, { 
       audio: { url: url }, 
       mimetype: 'audio/mpeg', 
-      ptt: true 
+      ptt: false
     }, { quoted: mek });
 
   } catch (error) {
@@ -87,7 +87,7 @@ async (conn, mek, m, { from, quoted, body, isCmd, command, args, q, isGroup, sen
     await conn.sendMessage(from, { 
       audio: { url: url }, 
       mimetype: 'audio/mpeg', 
-      ptt: true 
+      ptt: false
     }, { quoted: mek });
 
   } catch (error) {
