@@ -162,10 +162,10 @@ cmd({
                 content: `╭━━━〔 🔄 *Convert Menu* 〕━━━┈⊷
 ┃★╭────────────── 
 ┃★│ • attp
+┃★│ • caption
 ┃★│ • brat
 ┃★│ • aivoice
 ┃★│ • convert
-┃★│ • enhance
 ┃★│ • binary
 ┃★│ • dbinary
 ┃★│ • base64
@@ -188,7 +188,6 @@ cmd({
 ┃★│ • urlencode
 ┃★│ • urldecode
 ┃★│ • vsticker
-┃★│ • Wikipedia
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`,
@@ -305,6 +304,7 @@ cmd({
 ┃★│ • demote
 ┃★│ • ginfo
 ┃★│ • gstates
+┃★│ • groupstatus
 ┃★│ • hidetag
 ┃★│ • tagall
 ┃★│ • join
@@ -367,6 +367,7 @@ cmd({
 ┃★│ • getvideo
 ┃★│ • imgscan
 ┃★│ • image
+┃★│ • remini
 ┃★│ • topixel
 ┃★│ • adedit
 ┃★│ • bluredit
@@ -431,7 +432,7 @@ cmd({
 ┃★│ • biblelist
 ┃★│ • logomenu
 ┃★│ • logo
-┃★│ • settings
+┃★│ • setting
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`,
@@ -444,19 +445,13 @@ cmd({
 ┃★│ • date
 ┃★│ • count
 ┃★│ • countx
-┃★│ • caption
-┃★│ • createapi
 ┃★│ • calculate
+┃★│ • createapi
 ┃★│ • get
 ┃★│ • gpass
-┃★│ • ssweb
-┃★│ • person
+┃★│ • sss
 ┃★│ • timenow
 ┃★│ • timezone
-┃★│ • tempnumber
-┃★│ • tempmail
-┃★│ • vcc
-┃★│ • webinfo
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`,
@@ -505,14 +500,14 @@ cmd({
 ┃★│ • groupsprivacy
 ┃★│ • getprivacy
 ┃★│ • savecontact
-┃★│ • setting
+┃★│ • settings
 ┃★│ • jid
 ┃★│ • jid2
 ┃★│ • gjid
 ┃★│ • forward
 ┃★│ • fwd2
 ┃★│ • send
-┃★│ • persion
+┃★│ • person
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`,
@@ -540,15 +535,20 @@ cmd({
 ┃★│ • news2
 ┃★│ • mvdetail
 ┃★│ • praytime
-┃★│ • sss
+┃★│ • ssweb
 ┃★│ • srepo
 ┃★│ • stickers
 ┃★│ • ttstalk
 ┃★│ • twtstalk
+┃★│ • tempnumber
+┃★│ • tempmail
+┃★│ • vcc
 ┃★│ • yts
 ┃★│ • ytpost
 ┃★│ • ytstalk
+┃★│ • webinfo
 ┃★│ • weather
+┃★│ • Wikipedia
 ┃★╰──────────────
 ╰━━━━━━━━━━━━━━┈⊷
 > ${config.DESCRIPTION}`,
