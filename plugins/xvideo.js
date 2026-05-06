@@ -98,14 +98,14 @@ cmd(
                     from,
                     {
                       video: {url: downloadUrlhigh },
-                      caption: `*🔞 Here is your xnxx high quality video.*\n\n> ${infoMap.title}`
+                      caption: `*🔞 High Quality Video.*\n\n> ${infoMap.title}`
                     }, {quoted: tMsg}
                 )
             } else if (tText.trim() === "2") {
                 await conn.sendMessage(
                     from, {
                         video: {url: downloadUrllow },
-                        caption: `*🔞 Here is your xnxx low quality video.*\n\n> ${infoMap.title}`
+                        caption: `*🔞 Low Quality Video.*\n\n> ${infoMap.title}`
 
                     }, {quoted: tMsg}
                 )
@@ -153,13 +153,13 @@ cmd({
                 return await reply("No results found for your search.");
             }
 
-            let list = "🔍 *Xnxx Search Results* 🔞\n\n";
+            let list = "🔍 *Xnxx Search Results* 🔞\n\n🔢 *Reply Below Number.*\n\n";
             xnxxSearchapi.result.forEach((xnxx, i) => {
                 list += `*\`${i + 1}\` | | ${xnxx.title || "No title"}*\n`;
             });
 
             const listMsg = await conn.sendMessage(from, { 
-                text: list + "🔢 *Reply with the number to choose a video.*\n\n" + tharuzz_footer 
+                text: list + "\n🔢 *Reply with the number to choose a video.*\n\n" + tharuzz_footer 
             }, { quoted: mek });
 
             const listMsgId = listMsg.key.id;
@@ -221,13 +221,13 @@ cmd({
                         await react(tMsg.key, '🎥');
                         await conn.sendMessage(from, {
                             video: { url: downloadUrlhigh },
-                            caption: `*🔞 High Quality Video*\n\n> ${infoMap.title}\n\n${tharuzz_footer}`
+                            caption: `*🔞 High Quality Video*\n\n> ${infoMap.title}`
                         }, { quoted: tMsg });
                     } else if (tText.trim() === "2") {
                         await react(tMsg.key, '🎥');
                         await conn.sendMessage(from, {
                             video: { url: downloadUrllow },
-                            caption: `*🔞 Low Quality Video*\n\n> ${infoMap.title}\n\n${tharuzz_footer}`
+                            caption: `*🔞 Low Quality Video*\n\n> ${infoMap.title}`
                         }, { quoted: tMsg });
                     }
                 });
