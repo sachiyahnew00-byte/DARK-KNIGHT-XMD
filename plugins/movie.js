@@ -17,7 +17,7 @@ async (conn, mek, m, { from, reply, sender, args }) => {
             return reply("📽️ Please provide the name of the movie.\nExample: .movie Iron Man");
         }
 
-        const apiUrl = `https://apis.davidcyriltech.my.id/imdb?query=${encodeURIComponent(movieName)}`;
+        const apiUrl = `https://apis.davidcyril.name.ng/imdb?query=${encodeURIComponent(movieName)}`;
         const response = await axios.get(apiUrl);
 
         if (!response.data.status || !response.data.movie) {
