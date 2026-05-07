@@ -321,6 +321,7 @@ cmd({
 ┃★│ • unmute
 ┃★│ • newgc
 ┃★│ • out 
+┃★│ • multipoll
 ┃★│ • poll
 ┃★│ • getonline
 ┃★│ • opentime
