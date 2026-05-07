@@ -400,9 +400,9 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
 
-        const apiUrl = `https://movie-apis-omega.vercel.app/movie/gdrive/download?url=${encodeURIComponent(chosen.link)}&apikey=dark-key-2008`;
+        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.link)}&apikey=dark-key-2008`;
         const apiRes = await axios.get(apiUrl);
-        const direct = apiRes.data.result.finalLink;
+        const direct = apiRes.data.result.downloadUrl;
 
         if (!direct) {
             return conn.sendMessage(from, { text: "*Download link not found.*" }, { quoted: msg });
@@ -1949,9 +1949,9 @@ cmd({
           return conn.sendMessage(from, { text: `⚠️ *Large File (${chosen.size})*` }, { quoted: msg });
         }
         
-        const apiUrl = `https://movie-apis-omega.vercel.app/movie/gdrive/download?url=${encodeURIComponent(chosen.dllink)}&apikey=dark-key-2008`;
+        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.dllink)}&apikey=dark-key-2008`;
         const apiRes = await axios.get(apiUrl);
-        const direct = apiRes.data.result.finalLink;
+        const direct = apiRes.data.result.downloadUrl;
 
         if (!direct) {
             return conn.sendMessage(from, { text: "*download link not found.*" }, { quoted: msg });
