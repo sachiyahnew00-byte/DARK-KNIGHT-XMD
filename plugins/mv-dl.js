@@ -400,7 +400,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
 
-        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.link)}&apikey=dark-key-2008`;
+        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.link)}`;
         const apiRes = await axios.get(apiUrl);
         const direct = apiRes.data.result.downloadUrl;
 
@@ -1949,7 +1949,7 @@ cmd({
           return conn.sendMessage(from, { text: `⚠️ *Large File (${chosen.size})*` }, { quoted: msg });
         }
         
-        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.dllink)}&apikey=dark-key-2008`;
+        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.dllink)}`;
         const apiRes = await axios.get(apiUrl);
         const direct = apiRes.data.result.downloadUrl;
 
