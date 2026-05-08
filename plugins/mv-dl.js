@@ -942,7 +942,7 @@ cmd({
         const sizeGB = size.includes("gb") ? parseFloat(size) : parseFloat(size) / 1024;
 
         if (sizeGB > 2) { 
-          return conn.sendMessage(from, { text: `⚠️ *File is too large (${chosen.size})` }, { quoted: msg });
+          return conn.sendMessage(from, { text: `⚠️ *Large File* (${chosen.size})` }, { quoted: msg });
         }
 
         await conn.sendMessage(from, {
