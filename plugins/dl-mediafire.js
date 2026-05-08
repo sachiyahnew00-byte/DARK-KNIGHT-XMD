@@ -1,5 +1,6 @@
 const axios = require("axios");
 const { cmd } = require("../command");
+const mime = require("mime-types");
 
 cmd({
   pattern: "mediafire2",
@@ -15,35 +16,35 @@ cmd({
       return reply('⚠️ Please provide a MediaFire URL.\n\nExample:\n`.mediafire https://www.mediafire.com/file/...`');
     }
 
-    // Add a reaction while processing
     await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
-    // Build the API URL
     const apiUrl = `https://www.ominisave.store/api/mfire?url=${encodeURIComponent(q)}`;
-
-    // Fetch from API
     const { data } = await axios.get(apiUrl);
 
-    // Validate response
     if (!data.status || !data.result || !data.result.download) {
       return reply('❌ Unable to fetch the file. Please try again later or check the URL.');
     }
 
-    // Extract details
     const { fileName, uploaded, fileType, size, download } = data.result;
 
-    // Inform user
+    // --- Mimetype සොයන ක්‍රමය (Name + Link Headers) ---
+    let determinedMime = mime.lookup(fileName);
+    if (!determinedMime) {
+      try {
+        const headRes = await axios.head(download);
+        determinedMime = headRes.headers['content-type'];
+      } catch (e) {
+        determinedMime = fileType || "application/octet-stream";
+      }
+    }
+
     await reply(`📥 *Downloading:* ${fileName}\n*Size:* ${size}\nPlease wait...`);
 
-    // Download file
-    const fileResponse = await axios.get(download, { responseType: 'arraybuffer' });
-
-    // Send file
     await conn.sendMessage(from, {
-      document: fileResponse.data,
-      mimetype: fileType || 'application/octet-stream',
+      document: { url: download },
+      mimetype: determinedMime || "application/octet-stream",
       fileName: fileName,
-      caption: `📂 *File Name:* ${fileName}\n📦 *Size:* ${size}\n📅 *Uploaded:* ${uploaded}\n`,
+      caption: `📂 *File Name:* ${fileName}\n📦 *Size:* ${size}\n📅 *Uploaded:* ${uploaded}\n\n*© Powered By 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`,
       contextInfo: {
         mentionedJid: [m.sender],
         forwardingScore: 999,
@@ -56,7 +57,6 @@ cmd({
       }
     }, { quoted: mek });
 
-    // Success reaction
     await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
 
   } catch (error) {
@@ -65,7 +65,6 @@ cmd({
     await conn.sendMessage(from, { react: { text: '❌', key: m.key } });
   }
 });
-
 
 
 cmd({
@@ -97,26 +96,38 @@ cmd({
       return reply("⚠️ Failed to fetch MediaFire download link. Ensure the link is valid and public.");
     }
 
-    const { dl_link, fileName, fileType } = data.result;
+    const { dl_link, fileName, fileType, size } = data.result;
     const file_name = fileName || "mediafire_download";
-    const mime_type = fileType || "application/octet-stream";
+    
+    // --- Mimetype සොයන ක්‍රමය (Name + Link Headers) ---
+    let determinedMime = mime.lookup(file_name);
+    if (!determinedMime) {
+      try {
+        const headRes = await axios.head(dl_link);
+        determinedMime = headRes.headers['content-type'];
+      } catch (e) {
+        determinedMime = fileType || "application/octet-stream";
+      }
+    }
 
     await conn.sendMessage(from, {
       react: { text: "⬆️", key: m.key }
     });
 
-    const caption = `╭━━━〔 *MEDIAFIRE DOWNLOADER* 〕━━━⊷\n`
+    const caption = `*MEDIAFIRE DOWNLOADER*\n\n`
       + `┃▸ *File Name:* ${file_name}\n`
-      + `┃▸ *File Type:* ${mime_type}\n`
-      + `╰━━━⪼\n\n`
-      + `📥 *Downloading your file...*`;
+      + `┃▸ *File Type:* ${determinedMime}\n`
+      + `┃▸ *File Size:* ${size || 'Unknown'}\n\n`
+      + `*© Powered By 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
 
     await conn.sendMessage(from, {
       document: { url: dl_link },
-      mimetype: mime_type,
+      mimetype: determinedMime || "application/octet-stream",
       fileName: file_name,
       caption: caption
     }, { quoted: m });
+
+    await conn.sendMessage(from, { react: { text: "✅", key: m.key } });
 
   } catch (error) {
     console.error("Error:", error);
