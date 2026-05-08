@@ -900,7 +900,7 @@ cmd({
 
         const dlUrl = `https://vajira-official-apis.vercel.app/api/mlfbddl?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
         const dlRes = await axios.get(dlUrl);
-        const movie = dlRes.data; 
+        const movie = dlRes.data.result; 
 
         if (!movie.downloads || !movie.downloads.length) {
           return conn.sendMessage(from, { text: "*No download links available.*" }, { quoted: msg });
@@ -942,7 +942,7 @@ cmd({
         const sizeGB = size.includes("gb") ? parseFloat(size) : parseFloat(size) / 1024;
 
         if (sizeGB > 2) { 
-          return conn.sendMessage(from, { text: `⚠️ *File is too large (${chosen.size}).* 2GB සීමාව ඉක්මවා ඇති බැවින් සෘජුව එවිය නොහැක. කරුණාකර වෙනත් quality එකක් තෝරන්න.` }, { quoted: msg });
+          return conn.sendMessage(from, { text: `⚠️ *File is too large (${chosen.size})` }, { quoted: msg });
         }
 
         await conn.sendMessage(from, {
