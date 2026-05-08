@@ -77,7 +77,7 @@ cmd({
         const movieUrl = `https://silent-movies-api.vercel.app/api/media?id=${selected.id}&key=silent`;
         const movieRes = await axios.get(movieUrl);
         
-        const downloads = movieRes.data.data?.data?.downloadUrls;
+        const downloads = movieRes.data?.data?.data?.downloadUrls;
 
         if (!downloads?.length) return conn.sendMessage(from, { text: "*No download links available.*" }, { quoted: msg });
 
@@ -910,17 +910,18 @@ cmd({
           `🎬 *${movie.title}*\n\n` +
           `⭐ *Rating:* ${movie.rating}\n` +
           `📅 *Released:* ${movie.release}\n` +
-          `🎭 *Genres:* ${movie.genres}\n\n` +
-          `📝 *Description:* ${movie.description.substring(0, 250)}...\n\n` +
+          `🕐 *Runtime:* ${movie.duration}\n` +
+          `🎭 *Genres:* ${movie.genres}\n` +
+          `📝 *Description:* ${movie.description.substring(0, 100)}...\n\n` +
           `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝒔:* 📥\n\n`;
 
         movie.downloads.forEach((d, i) => {
-          info += `♦️ ${i + 1}. *${d.quality} (${d.language})* — ${d.size}\n`;
+          info += `♦️ ${i + 1}. *${d.quality}* — ${d.size}\n`;
         });
         info += "\n🔢 *Reply with number to download.*";
 
         const downloadMsg = await conn.sendMessage(from, {
-          image: { url: movie.poster },
+          image: { url: movie.image },
           caption: info
         }, { quoted: msg });
 
@@ -945,7 +946,7 @@ cmd({
         }
 
         await conn.sendMessage(from, {
-          document: { url: chosen.directDownloadUrl },
+          document: { url: chosen.direct },
           mimetype: "video/mp4",
           fileName: `${title} - ${chosen.quality}.mp4`,
           caption: `🎬 *${title}*\n🎥 *${chosen.quality}*\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
