@@ -912,7 +912,7 @@ cmd({
           `📅 *Released:* ${movie.release}\n` +
           `🕐 *Runtime:* ${movie.duration}\n` +
           `🎭 *Genres:* ${movie.genres}\n` +
-          `📝 *Description:* ${movie.description.substring(0, 100)}...\n\n` +
+          `📝 *Description:* ${movie.description.substring(0, 200)}...\n\n` +
           `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝒔:* 📥\n\n`;
 
         movie.downloads.forEach((d, i) => {
