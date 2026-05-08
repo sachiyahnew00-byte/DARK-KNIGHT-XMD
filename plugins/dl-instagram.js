@@ -174,6 +174,7 @@ cmd({
   }
 });
 
+
 cmd({
   pattern: "igdl",
   alias: ["ig2"],
@@ -192,11 +193,12 @@ cmd({
     const response = await axios.get(`https://apis.davidcyril.name.ng/instagram?url=${q}`);
     const data = response.data;
 
-    if (!data || !data.success || !data.downloadUrl) {
+    // API response එකේ data.result තිබේදැයි පරීක්ෂා කිරීම
+    if (!data || !data.success || !data.result) {
       return reply("⚠️ Failed to retrieve Instagram media. Please check the link and try again.");
     }
 
-    const { creator, thumbnail, downloadUrl } = data;
+    const { video, mp3, thumbnail } = data.result;
 
     const caption = `
 📺 Instagram Downloader. 📥
@@ -232,15 +234,15 @@ cmd({
         switch (receivedText.trim()) {
           case "1":
             await conn.sendMessage(senderID, {
-              video: { url: downloadUrl[0] },
+              video: { url: video },
               caption: "📥 *Video Downloaded Successfully!*"
             }, { quoted: receivedMsg });
             break;
 
           case "2":
             await conn.sendMessage(senderID, {
-              audio: { url: downloadUrl[0] },
-              mimetype: "audio/mp4",
+              audio: { url: mp3 },
+              mimetype: "audio/mp3",
               ptt: false
             }, { quoted: receivedMsg });
             break;
@@ -255,4 +257,4 @@ cmd({
     console.error("Instagram Plugin Error:", error);
     reply("❌ An error occurred while processing your request. Please try again later.");
   }
-});
+});     
