@@ -81,8 +81,6 @@ async (conn, mek, m, { from, q, reply }) => {
         await file.loadAttributes();
         const fileName = file.name || "mega_file.bin";
         
-        // ගොනුවේ නම අනුව නිවැරදි mimetype එක හඳුනා ගැනීම
-        // හඳුනාගත නොහැකි නම් default එක ලෙස application/octet-stream ලබා දේ
         const mimeType = mime.lookup(fileName) || 'application/octet-stream';
 
         // Download into buffer
@@ -104,7 +102,7 @@ async (conn, mek, m, { from, q, reply }) => {
             document: fs.readFileSync(savePath),
             fileName: fileName,
             mimetype: mimeType,
-            caption: `📦 *File Name:* ${fileName}\n\n*Powered By Jawad TechX*`
+            caption: `📦 *File Name:* ${fileName}\n\n*Powered By 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`
         }, { quoted: mek });
 
         // Delete temp file
