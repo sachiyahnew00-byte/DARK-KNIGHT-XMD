@@ -1,9 +1,10 @@
 const { cmd } = require('../command');
 const { File } = require('megajs');
 const axios = require('axios');
-const config = require('../config');
 const mime = require('mime-types');
-
+const fs = require('fs');
+const path = require('path');
+const os = require('os');
 
 cmd({
     pattern: "mega",
@@ -57,49 +58,63 @@ cmd({
 });
 
 
-
 cmd({
-    pattern: "megadl",
-    alias: ["mega2", "meganz2"],
-    desc: "Download files from mega.nz",
-    category: "download",
-    react: "🍟",
-    use: "megadl <mega.nz link>",
-    filename: __filename
-}, async (conn, mek, m, { q, reply,from }) => {
-    try {
-            
-        if (!q || !q.includes("mega.nz")) return await reply(megaMg);
-        await conn.sendMessage(from, { react: { text: "📥", key: mek.key } });
+    pattern: "megadl",
+    alias: ["mega2", "meganz2"],
+    react: "📦",
+    desc: "Download any file from Mega.nz",
+    category: "download",
+    use: '.megadl <mega file link>',
+    filename: __filename
+},
+async (conn, mek, m, { from, q, reply }) => {
+    try {
+        if (!q) return reply("📦 Please provide a Mega.nz file link.\n\nExample: `.megadl https://mega.nz/file/xxxx#key`");
 
-        const file = File.fromURL(q, { maxWorkers: 16 }); // 8 parallel chunks
-        const fileName = (await file.loadAttributes()).name;
-        const mimeType = mime.lookup(fileName) || 'application/octet-stream';
+        // React: Processing
+        await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
-        const chunks = [];
-        const stream = file.download();
+        // Initialize MEGA File from link
+        const file = File.fromURL(q);
+        
+        // ගොනුවේ නම සහ විස්තර ලබා ගැනීම
+        await file.loadAttributes();
+        const fileName = file.name || "mega_file.bin";
+        
+        // ගොනුවේ නම අනුව නිවැරදි mimetype එක හඳුනා ගැනීම
+        // හඳුනාගත නොහැකි නම් default එක ලෙස application/octet-stream ලබා දේ
+        const mimeType = mime.lookup(fileName) || 'application/octet-stream';
 
-        stream.on('data', (chunk) => chunks.push(chunk));
-        stream.on('end', async () => {
-            const buffer = Buffer.concat(chunks);
+        // Download into buffer
+        const data = await new Promise((resolve, reject) => {
+            file.download((err, data) => {
+                if (err) reject(err);
+                else resolve(data);
+            });
+        });
 
-            await conn.sendMessage(from, {
-                contextInfo: getContextInfo(config.BOT_NAME !== 'default' ? config.BOT_NAME : null), document: buffer,
-                fileName,
-                caption: config.DESCRIPTION,
-                mimetype: mimeType
-            }, { quoted: mek });
+        // Create temp file path
+        const savePath = path.join(os.tmpdir(), fileName);
 
-            await conn.sendMessage(from, { react: { text: "✅", key: mek.key } });
-        });
+        // Save file locally
+        fs.writeFileSync(savePath, data);
 
-        stream.on('error', async (err) => {
-            console.error(err);
-            await reply(errorMgMega);
-        });
+        // Send file
+        await conn.sendMessage(from, {
+            document: fs.readFileSync(savePath),
+            fileName: fileName,
+            mimetype: mimeType,
+            caption: `📦 *File Name:* ${fileName}\n\n*Powered By Jawad TechX*`
+        }, { quoted: mek });
 
-    } catch (e) {
-        console.error(e);
-        await reply(errorMgMega);
-    }
+        // Delete temp file
+        fs.unlinkSync(savePath);
+
+        // React: Done
+        await conn.sendMessage(from, { react: { text: '✅', key: m.key } });
+
+    } catch (error) {
+        console.error("❌ MEGA Downloader Error:", error);
+        reply("❌ Failed to download file from Mega.nz. Make sure the link is valid and file is accessible.");
+    }
 });
