@@ -92,8 +92,7 @@ cmd({
           `📝 *Posttitle:*\n${selected.post}\n\n` +
           `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝒔:* 📥\n\n`;
         
-        downloads.forEach((d, i) => {
-  
+        downloads.forEach((d, i) => {  
           const sizeInBytes = parseInt(d.size);
           const sizeMB = (sizeInBytes / (1024 * 1024)).toFixed(1);
           const formattedSize = sizeMB >= 1024 ? `${(sizeMB / 1024).toFixed(2)} GB` : `${sizeMB} MB`;
