@@ -707,7 +707,265 @@ cmd({
     await conn.sendMessage(from, { text: `*Error:* ${err.message}` }, { quoted: mek });
   }
 });
-         
+
+cmd({
+  pattern: "movibd",
+  alias: ["movi"],
+  desc: "🎥 Search movies from MoviBD",
+  category: "media",
+  react: "🎬",
+  filename: __filename
+}, async (conn, mek, m, { from, q }) => {
+
+  if (!q) {
+    return await conn.sendMessage(from, {
+      text: "Use: .movibd <movie name>"
+    }, { quoted: mek });
+  }
+
+  try {
+    const cacheKey = `movibd_${q.toLowerCase()}`;
+    let data = movieCache.get(cacheKey);
+
+    if (!data) {
+      const url = `https://vajira-official-apis.vercel.app/api/movibd?apikey=${KEY}&search=${encodeURIComponent(q)}`;
+      const res = await axios.get(url);
+      data = res.data;
+
+      if (data.status !== 200 || !data.data?.length) {
+        throw new Error("No results found for your query.");
+      }
+
+      movieCache.set(cacheKey, data);
+    }
+    
+    const movieList = data.data.map((m, i) => ({
+      number: i + 1,
+      title: m.title,
+      link: m.url
+    }));
+
+    let textList = "🔢 𝑅𝑒𝑝𝑙𝑦 𝐵𝑒𝑙𝑜𝑤 𝑁𝑢𝑚𝑏𝑒𝑟\n━━━━━━━━━━━━━━━━━\n\n";
+    movieList.forEach((m) => {
+      textList += `🔸 *${m.number}. ${m.title}*\n`;
+    });
+    textList += "\n💬 *Reply with movie number to view details.*";
+
+    const sentMsg = await conn.sendMessage(from, {
+      text: `*🔍 𝐌𝐎𝐕𝐈𝐁𝐃 𝐂𝐈𝐍𝐄𝐌𝐀 𝐒𝐄𝐀𝐑𝐂𝐇 🎥*\n\n${textList}\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
+    }, { quoted: mek });
+
+    const movieMap = new Map();
+
+    const listener = async (update) => {
+      const msg = update.messages?.[0];
+      if (!msg?.message?.extendedTextMessage) return;
+
+      const replyText = msg.message.extendedTextMessage.text.trim();
+      const repliedId = msg.message.extendedTextMessage.contextInfo?.stanzaId;
+
+      if (replyText.toLowerCase() === "done") {
+        conn.ev.off("messages.upsert", listener);
+        return conn.sendMessage(from, { text: "✅ *Cancelled.*" }, { quoted: msg });
+      }
+
+      if (repliedId === sentMsg.key.id) {
+        const num = parseInt(replyText);
+        const selected = movieList.find(m => m.number === num);
+        if (!selected) {
+          return conn.sendMessage(from, { text: "*Invalid Movie Number.*" }, { quoted: msg });
+        }
+
+        await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
+
+        const dlUrl = `https://vajira-official-apis.vercel.app/api/movibddl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
+        const dlRes = await axios.get(dlUrl);
+        const movie = dlRes.data.data; 
+
+        if (!movie.downloads || !movie.downloads.length) {
+          return conn.sendMessage(from, { text: "*No download links available.*" }, { quoted: msg });
+        }
+
+        let info =
+          `🎬 *${movie.title}*\n\n` +
+          `⭐ *Rating:* ${movie.rate || "N/A"}\n` +
+          `📅 *Released:* ${movie.date || "N/A"}\n` +
+          `🌍 *Country:* ${movie.country || "N/A"}\n` +
+          `🕐 *Runtime:* ${movie.duration || "N/A"}\n` +
+          `🎭 *Genres:* ${movie.genres || "N/A"}\n` +
+          `📝 *Description:* ${movie.description ? movie.description.substring(0, 200) + "..." : "N/A"}\n\n` +
+          `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝓼:* 📥\n\n`;
+
+        movie.downloads.forEach((d, i) => {
+          info += `♦️ ${i + 1}. *${d.quality}* (${d.lang}) — ${d.size}\n`;
+        });
+        info += "\n🔢 *Reply with number to download.*";
+
+        const downloadMsg = await conn.sendMessage(from, {
+          image: { url: movie.poster },
+          caption: info
+        }, { quoted: msg });
+
+        movieMap.set(downloadMsg.key.id, { title: movie.title, downloads: movie.downloads });
+      }
+
+      else if (movieMap.has(repliedId)) {
+        const { title, downloads } = movieMap.get(repliedId);
+        const num = parseInt(replyText);
+        const chosen = downloads[num - 1];
+        if (!chosen) {
+          return conn.sendMessage(from, { text: "*Invalid number.*" }, { quoted: msg });
+        }
+
+        await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
+
+        const size = chosen.size.toLowerCase();
+        const sizeGB = size.includes("gb") ? parseFloat(size) : parseFloat(size) / 1024;
+
+        if (sizeGB > 2) { 
+          return conn.sendMessage(from, { text: `⚠️ *Large File* (${chosen.size})` }, { quoted: msg });
+        }
+
+        await conn.sendMessage(from, {
+          document: { url: chosen.final_download_url },
+          mimetype: "video/mp4",
+          fileName: `${title} - ${chosen.quality}.mp4`,
+          caption: `🎬 *${title}*\n🎥 *${chosen.quality}*\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
+        }, { quoted: msg });
+      }
+    };
+
+    conn.ev.on("messages.upsert", listener);
+
+  } catch (err) {
+    await conn.sendMessage(from, { text: `*Error:* ${err.message}` }, { quoted: mek });
+  }
+});
+
+cmd({
+  pattern: "moviect",
+  alias: ["mct"],
+  desc: "🎥 Search movies from Moviect",
+  category: "media",
+  react: "🎬",
+  filename: __filename
+}, async (conn, mek, m, { from, q }) => {
+
+  if (!q) {
+    return await conn.sendMessage(from, {
+      text: "Use: .moviect <movie name>"
+    }, { quoted: mek });
+  }
+
+  try {
+    const cacheKey = `moviect_${q.toLowerCase()}`;
+    let data = movieCache.get(cacheKey);
+
+    if (!data) {
+      const url = `https://vajira-official-apis.vercel.app/api/moviect?apikey=${KEY}&search=${encodeURIComponent(q)}`;
+      const res = await axios.get(url);
+      data = res.data;
+
+      if (data.status !== 200 || !data.data?.length) {
+        throw new Error("No results found for your query.");
+      }
+
+      movieCache.set(cacheKey, data);
+    }
+    
+    const movieList = data.data.map((m, i) => ({
+      number: i + 1,
+      title: m.title,
+      link: m.url
+    }));
+
+    let textList = "🔢 𝑅𝑒𝑝𝑙𝑦 𝐵𝑒𝑙𝑜𝑤 𝑁𝑢𝑚𝑏𝑒𝑟\n━━━━━━━━━━━━━━━━━\n\n";
+    movieList.forEach((m) => {
+      textList += `🔸 *${m.number}. ${m.title}*\n`;
+    });
+    textList += "\n💬 *Reply with movie number to view details.*";
+
+    const sentMsg = await conn.sendMessage(from, {
+      text: `*🔍 𝐌𝐎𝐕𝐈𝐄𝐂𝐓 𝐂𝐈𝐍𝐄𝐌𝐀 𝐒𝐄𝐀𝐑𝐂𝐇 🎥*\n\n${textList}\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
+    }, { quoted: mek });
+
+    const movieMap = new Map();
+
+    const listener = async (update) => {
+      const msg = update.messages?.[0];
+      if (!msg?.message?.extendedTextMessage) return;
+
+      const replyText = msg.message.extendedTextMessage.text.trim();
+      const repliedId = msg.message.extendedTextMessage.contextInfo?.stanzaId;
+
+      if (replyText.toLowerCase() === "done") {
+        conn.ev.off("messages.upsert", listener);
+        return conn.sendMessage(from, { text: "✅ *Cancelled.*" }, { quoted: msg });
+      }
+
+      if (repliedId === sentMsg.key.id) {
+        const num = parseInt(replyText);
+        const selected = movieList.find(m => m.number === num);
+        if (!selected) {
+          return conn.sendMessage(from, { text: "*Invalid Movie Number.*" }, { quoted: msg });
+        }
+
+        await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
+
+        const dlUrl = `https://vajira-official-apis.vercel.app/api/moviectdl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
+        const dlRes = await axios.get(dlUrl);
+        const movie = dlRes.data.data; 
+
+        if (!movie.links || !movie.links.length) {
+          return conn.sendMessage(from, { text: "*No download links available.*" }, { quoted: msg });
+        }
+
+        let info =
+          `🎬 *${movie.title}*\n\n` +
+          `⭐ *Rating Count:* ${movie.ratingCount || "N/A"}\n` +
+          `🎭 *Genres:* ${movie.genres || "N/A"}\n` +
+          `📝 *Description:* ${movie.description ? movie.description.substring(0, 200) + "..." : "N/A"}\n\n` +
+          `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝒔:* 📥\n\n`;
+
+        movie.links.forEach((d, i) => {
+          info += `♦️ ${i + 1}. *${d.quality}* — ${d.country || ""}\n`;
+        });
+        info += "\n🔢 *Reply with number to download.*";
+
+        const downloadMsg = await conn.sendMessage(from, {
+          image: { url: movie.poster },
+          caption: info
+        }, { quoted: msg });
+
+        movieMap.set(downloadMsg.key.id, { title: movie.title, downloads: movie.links });
+      }
+
+      else if (movieMap.has(repliedId)) {
+        const { title, downloads } = movieMap.get(repliedId);
+        const num = parseInt(replyText);
+        const chosen = downloads[num - 1];
+        if (!chosen) {
+          return conn.sendMessage(from, { text: "*Invalid number.*" }, { quoted: msg });
+        }
+
+        await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
+
+        await conn.sendMessage(from, {
+          document: { url: chosen.url },
+          mimetype: "video/mp4",
+          fileName: `${title} - ${chosen.quality}.mp4`,
+          caption: `🎬 *${title}*\n🎥 *${chosen.quality}*\n\n> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`
+        }, { quoted: msg });
+      }
+    };
+
+    conn.ev.on("messages.upsert", listener);
+
+  } catch (err) {
+    await conn.sendMessage(from, { text: `*Error:* ${err.message}` }, { quoted: mek });
+  }
+});
+
 cmd({
   pattern: "notunmovie",
   alias: ["mnotun"],
