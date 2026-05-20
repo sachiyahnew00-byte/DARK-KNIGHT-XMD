@@ -4,6 +4,7 @@ const config = require('../config');
 const NodeCache = require("node-cache");
 
 const movieCache = new NodeCache({ stdTTL: 100, checkperiod: 120 });
+const KEY = "vajira-n956s6fm54-1779280445777";
 
 cmd({
   pattern: "moviepro",
@@ -581,7 +582,7 @@ cmd({
     let data = movieCache.get(cacheKey);
 
     if (!data) {
-      const url = `https://vajira-official-apis.vercel.app/api/123mkv?apikey=vajira-y81b4xwq28-1777446404671&q=${encodeURIComponent(q)}`;
+      const url = `https://vajira-official-apis.vercel.app/api/123mkv?apikey=${KEY}&q=${encodeURIComponent(q)}`;
       const res = await axios.get(url);
       data = res.data;
 
@@ -631,7 +632,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-      const movieUrl = `https://vajira-official-apis.vercel.app/api/123mkvdetails?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
+      const movieUrl = `https://vajira-official-apis.vercel.app/api/123mkvdetails?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
       const movieRes = await axios.get(movieUrl);
       const movie = movieRes.data;
 
@@ -727,7 +728,7 @@ cmd({
     let data = movieCache.get(cacheKey);
 
     if (!data) {
-      const url = `https://vajira-official-apis.vercel.app/api/notuns?apikey=vajira-y81b4xwq28-1777446404671&text=${encodeURIComponent(q)}`;
+      const url = `https://vajira-official-apis.vercel.app/api/notuns?apikey=${KEY}&text=${encodeURIComponent(q)}`;
       const res = await axios.get(url);
       data = res.data;
 
@@ -777,7 +778,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-      const movieUrl = `https://vajira-official-apis.vercel.app/api/notundl?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
+      const movieUrl = `https://vajira-official-apis.vercel.app/api/notundl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
       const movieRes = await axios.get(movieUrl);
       const movie = movieRes.data.result;
 
@@ -856,7 +857,7 @@ cmd({
     let data = movieCache.get(cacheKey);
 
     if (!data) {
-      const url = `https://vajira-official-apis.vercel.app/api/mlfbds?apikey=vajira-y81b4xwq28-1777446404671&text=${encodeURIComponent(q)}`;
+      const url = `https://vajira-official-apis.vercel.app/api/mlfbds?apikey=${KEY}&text=${encodeURIComponent(q)}`;
       const res = await axios.get(url);
       data = res.data;
 
@@ -906,7 +907,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-        const dlUrl = `https://vajira-official-apis.vercel.app/api/mlfbddl?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
+        const dlUrl = `https://vajira-official-apis.vercel.app/api/mlfbddl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
         const dlRes = await axios.get(dlUrl);
         const movie = dlRes.data.result; 
 
@@ -990,7 +991,7 @@ cmd({
 
     if (!data) {
       // Search API
-      const url = `https://vajira-official-apis.vercel.app/api/moviebdsearch?apikey=vajira-y81b4xwq28-1777446404671&q=${encodeURIComponent(q)}`;
+      const url = `https://vajira-official-apis.vercel.app/api/moviebdsearch?apikey=${KEY}&q=${encodeURIComponent(q)}`;
       const res = await axios.get(url);
       data = res.data;
 
@@ -1040,7 +1041,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-        const dlUrl = `https://vajira-official-apis.vercel.app/api/moviebddl?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
+        const dlUrl = `https://vajira-official-apis.vercel.app/api/moviebddl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
         const dlRes = await axios.get(dlUrl);
         const movie = dlRes.data.result; 
 
@@ -1116,7 +1117,7 @@ cmd({
     let data = movieCache.get(cacheKey);
 
     if (!data) {
-      const url = `https://vajira-official-apis.vercel.app/api/movielovers?apikey=vajira-y81b4xwq28-1777446404671&text=${encodeURIComponent(q)}`;
+      const url = `https://vajira-official-apis.vercel.app/api/movielovers?apikey=${KEY}&text=${encodeURIComponent(q)}`;
       const res = await axios.get(url);
       data = res.data;
 
@@ -1166,7 +1167,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "🎯", key: msg.key } });
 
-      const movieUrl = `https://vajira-official-apis.vercel.app/api/movieloverdl?apikey=vajira-y81b4xwq28-1777446404671&url=${encodeURIComponent(selected.link)}`;
+      const movieUrl = `https://vajira-official-apis.vercel.app/api/movieloverdl?apikey=${KEY}&url=${encodeURIComponent(selected.link)}`;
       const movieRes = await axios.get(movieUrl);
       const movie = movieRes.data.result;
 
