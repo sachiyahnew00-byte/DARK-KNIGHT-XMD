@@ -42,18 +42,19 @@ cmd({
     form.append('fileToUpload', fs.createReadStream(tempFilePath), fileName);
     form.append('reqtype', 'fileupload');
 
-    // Upload to Catbox using Axios with Full Spoofed Headers
+    // Upload to Catbox
     const response = await axios.post("https://catbox.moe/user/api.php", form, {
-      headers: {
-        ...form.getHeaders(),
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0',
-        'Accept': '*/*',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Origin': 'https://catbox.moe',
-        'Referer': 'https://catbox.moe/'
-      }
+            headers: {
+                ...form.getHeaders(), 
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                "Accept": "*/*",
+                "Accept-Language": "en-US,en;q=0.9",
+                "Accept-Encoding": "gzip, deflate, br",
+                "Origin": "https://catbox.moe",
+                "Referer": "https://catbox.moe/",
+            }
     });
-
+    
     if (!response.data) {
       throw "Error uploading to Catbox";
     }
@@ -89,6 +90,7 @@ function formatBytes(bytes) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
+
 
 
 cmd({
