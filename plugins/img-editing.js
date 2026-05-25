@@ -55,7 +55,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -137,7 +137,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -218,7 +218,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -299,7 +299,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -380,7 +380,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -461,7 +461,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -542,7 +542,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
@@ -623,7 +623,7 @@ cmd({
     /*const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });*/
-    const response = await axios.post("https://catbox.moe/user/api.php", form, {
+    const uploadResponse = await axios.post("https://catbox.moe/user/api.php", form, {
             headers: {
                 ...form.getHeaders(), 
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
