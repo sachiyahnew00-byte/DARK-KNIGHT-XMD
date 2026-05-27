@@ -20,7 +20,7 @@ async (conn, mek, m, { args, reply }) => {
         const { data } = await axios.get(apiUrl);
 
         if (!data || data.status !== "success" || !data.data) {
-            return reply('❌ Website info nahi mil saka. URL ya API key check karein.');
+            return reply('❌ Website info failed.');
         }
 
         const info = data.data;
@@ -35,7 +35,7 @@ async (conn, mek, m, { args, reply }) => {
 ╰──────────────➤`;
 
         // Fixed image thumbnail
-        const fixedImageUrl = 'https://www.bandaheali.site/images/2nrSWv9.jpg';
+        const fixedImageUrl = 'https://files.catbox.moe/brlkte.jpg';
         const response = await axios.get(fixedImageUrl, { responseType: 'arraybuffer' });
         const buffer = Buffer.from(response.data, 'binary');
 
