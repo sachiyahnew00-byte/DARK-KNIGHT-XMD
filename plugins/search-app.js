@@ -29,11 +29,11 @@ async (conn, mek, m, { from, q, reply }) => {
         let finalMessage = `📲 *PLAY STORE SEARCH RESULTS*\n\n`;
 
         apps.forEach((app, index) => {
-            finalMessage += `*${index + 1}. ${app.nama}*\n`;
-            finalMessage += `│• 👨‍💻 *Dev:* ${app.developer}\n`;
-            finalMessage += `│• ⭐ *Rating:* ${app.rate2 || 'N/A'}\n`;
-            finalMessage += `│• 🔗 *Link:* ${app.link}\n`;
-            finalMessage += `╰─────────────────\n\n`;
+            finalMessage += `🗂️ *${index + 1}. ${app.nama}*\n`;
+            finalMessage += `• 👨‍💻 *Dev:* ${app.developer}\n`;
+            finalMessage += `• ⭐ *Rating:* ${app.rate2 || 'N/A'}\n`;
+            finalMessage += `• 🔗 *Link:* ${app.link}\n\n`;
+            finalMessage += `─────────────────\n\n`;
         });
 
         finalMessage += `*Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳*`;
