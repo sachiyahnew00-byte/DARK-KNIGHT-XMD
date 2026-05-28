@@ -42,7 +42,7 @@ async (conn, mek, m, { from, sender, reply, isGroup, args }) => {
     try {
       imageUrl = await conn.profilePictureUrl(targetJid, "image");
     } catch {
-      imageUrl = "https://files.catbox.moe/brlkte.jpg"; // fallback
+      imageUrl = "https://files.catbox.moe/a757v6.jpg"; // fallback
     }
 
     // Fake vCard for quoting
@@ -116,7 +116,7 @@ async (conn, mek, m, { from, sender, reply, isGroup }) => {
     try {
       imageUrl = await conn.profilePictureUrl(targetJid, 'image');
     } catch {
-      imageUrl = "https://files.catbox.moe/brlkte.jpg";
+      imageUrl = "https://files.catbox.moe/a757v6.jpg";
     }
 
     const fakeVCard = {
