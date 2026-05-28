@@ -2,6 +2,7 @@ const axios = require("axios");
 const { cmd } = require("../command");
 const { fetchJson, getBuffer } = require('../lib/functions');
 const { Sticker, StickerTypes } = require('wa-sticker-formatter'); 
+const config = require('../config');
 
 // --- 1. LOGO LIST ---
 cmd({
@@ -197,7 +198,7 @@ async (conn, mek, m, { from }) => {
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://files.catbox.moe/brlkte.jpg` },
+                image: { url: config.ALIVE_IMG },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
