@@ -4,6 +4,7 @@ const fs = require('fs');
 const path = require('path');
 const { cmd, commands } = require('../command');
 const { runtime } = require('../lib/functions');
+const config = require('../config');
 
 cmd({
   pattern: 'version',
