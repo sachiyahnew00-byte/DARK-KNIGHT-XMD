@@ -61,7 +61,7 @@ https://wa.me/+94771825192?text=Support!
         await conn.sendMessage(
             from,
             {
-                image: { url: `https://files.catbox.moe/brlkte.jpg` },
+                image: { url: config.ALIVE_IMG },
                 caption: dec,
                 contextInfo: {
                     mentionedJid: [m.sender],
