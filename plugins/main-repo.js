@@ -171,7 +171,7 @@ ${repoData.description || 'No description provided'}
 
         // Send image with repo info
         await conn.sendMessage(from, {
-            image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/brlkte.jpg' },
+            image: { url: config.ALIVE_IMG },
             caption: selectedStyle,
             contextInfo: { 
                 mentionedJid: [m.sender],
