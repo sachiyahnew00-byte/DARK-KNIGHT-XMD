@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { cmd } = require("../command");
+const config = require('../config');
 
 cmd({
     pattern: "ban",
@@ -29,7 +30,7 @@ cmd({
         fs.writeFileSync("./lib/ban.json", JSON.stringify([...new Set(banned)], null, 2));
 
         await conn.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/brlkte.jpg" },
+            image: { url: config.ALIVE_IMG },
             caption: `⛔ User has been banned from using the bot.`
         }, { quoted: mek });
 
@@ -66,7 +67,7 @@ cmd({
         fs.writeFileSync("./lib/ban.json", JSON.stringify(updated, null, 2));
 
         await conn.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/brlkte.jpg" },
+            image: { url: config.ALIVE_IMG },
             caption: `✅ User has been unbanned.`
         }, { quoted: mek });
 
@@ -98,7 +99,7 @@ cmd({
         });
 
         await conn.sendMessage(from, {
-            image: { url: "https://files.catbox.moe/brlkte.jpg" },
+            image: { url: config.ALIVE_IMG },
             caption: msg
         }, { quoted: mek });
     } catch (err) {
