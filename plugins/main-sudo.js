@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { cmd } = require("../command");
+const config = require('../config');
 
 const OWNER_PATH = path.join(__dirname, "../lib/sudo.json");
 
