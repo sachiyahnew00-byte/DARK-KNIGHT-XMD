@@ -43,7 +43,7 @@ async (conn, mek, m, { from, sender, reply }) => {
     };      
         
         await conn.sendMessage(from, {
-            image: { url: config.MENU_IMAGE_URL },
+            image: { url: config.ALIVE_IMG },
             caption: status,
             contextInfo: {
                 mentionedJid: [m.sender],
