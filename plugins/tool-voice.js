@@ -1,5 +1,6 @@
 const { cmd } = require('../command');
 const axios = require('axios');
+const config = require('../config');
 
 cmd({
     pattern: "aivoice",
@@ -73,7 +74,7 @@ async (conn, mek, m, {
 
         // Send menu message with image
         const sentMsg = await conn.sendMessage(from, {  
-            image: { url: "https://files.catbox.moe/brlkte.jpg" },
+            image: { url: config.ALIVE_IMG },
             caption: menuText
         }, { quoted: m });
 
