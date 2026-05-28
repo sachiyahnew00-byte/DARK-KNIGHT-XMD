@@ -125,7 +125,7 @@ const port = process.env.PORT || 9090;
 ╰─ 🛠️ *Prefix:* \`${config.PREFIX}\`
 
 > _© Made By 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃_`;
-    conn.sendMessage(conn.user.id, { image: { url: `https://files.catbox.moe/brlkte.jpg` }, caption: up })
+    conn.sendMessage(conn.user.id, { image: { url: config.ALIVE_IMG }, caption: up })
   }
   })
   conn.ev.on('creds.update', saveCreds)
