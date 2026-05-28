@@ -143,7 +143,7 @@ cmd({
     await conn.sendMessage(from, { react: { text: "⬇️", key: m.key } });
 
     // New Sadiya Tech API
-    const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(q)}`;
+    const apiUrl = `https://dark-knight-xmd-reset-apis.vercel.app/api/gdrive?url=${encodeURIComponent(q)}`;
     const response = await axios.get(apiUrl);
 
     if (response.data.success && response.data.result) {
