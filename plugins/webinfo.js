@@ -35,7 +35,7 @@ async (conn, mek, m, { args, reply }) => {
 ╰──────────────➤`;
 
         // Fixed image thumbnail
-        const fixedImageUrl = 'https://files.catbox.moe/brlkte.jpg';
+        const fixedImageUrl = 'https://files.catbox.moe/a757v6.jpg';
         const response = await axios.get(fixedImageUrl, { responseType: 'arraybuffer' });
         const buffer = Buffer.from(response.data, 'binary');
 
