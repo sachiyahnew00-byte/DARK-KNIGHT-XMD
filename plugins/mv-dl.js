@@ -538,7 +538,7 @@ cmd({
 
         await conn.sendMessage(from, { react: { text: "📥", key: msg.key } });
 
-        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.link)}`;
+        const apiUrl = `https://dark-knight-xmd-reset-apis.vercel.app/api/gdrive?url=${encodeURIComponent(chosen.link)}`;
         const apiRes = await axios.get(apiUrl);
         const direct = apiRes.data.result.downloadUrl;
 
@@ -1641,22 +1641,23 @@ cmd({
     let data = movieCache.get(cacheKey);
 
     if (!data) {
-      const url = `https://visper-md-ap-is.vercel.app/movie/sinhalasub/search?q=${encodeURIComponent(q)}`;
+      const url = `https://apis.sadas.dev/api/v1/movie/sinhalasub/search?q=${encodeURIComponent(q)}&apiKey=c120328cb33f021754c1ae0b1ecf47c6`;
       const res = await axios.get(url);
       data = res.data;
 
-      if (!data.success || !data.result?.length) {
+      if (!data.status || !data.data?.length) {
         throw new Error("No results found for your query.");
       }
 
       movieCache.set(cacheKey, data);
     }
     
-    const movieList = data.result.map((m, i) => ({
+    const movieList = data.data.map((m, i) => ({
       number: i + 1,
       title: m.Title,
       link: m.Link,
-      type: m.Type
+      type: m.Type,
+      quality: m.Quality
     }));
 
     let textList = "🔢 𝑅𝑒𝑝𝑙𝑦 𝐵𝑒𝑙𝑜𝑤 𝑁𝑢𝑚𝑏𝑒𝑟\n━━━━━━━━━━━━━━━━━\n\n";
@@ -1716,6 +1717,7 @@ cmd({
           `🎬 *${movie.result.title}*\n\n` +
           `📅 *Released* ${movie.result.year}\n` +
           `🕐 *Runtime:* ${movie.result.duration}\n` +
+          `🎭 *Quality:* ${selected.quality}\n` +
           `✍️ *Type:* ${selected.type}\n\n` +
           `🎥 *𝑫𝒐𝒘𝒏𝒍𝒐𝒂𝒅 𝑳𝒊𝒏𝒌𝒔:* 📥 📥\n\n`;
 
@@ -2604,7 +2606,7 @@ cmd({
           return conn.sendMessage(from, { text: `⚠️ *Large File (${chosen.size})*` }, { quoted: msg });
         }
         
-        const apiUrl = `https://visper-md-ap-is.vercel.app/download/gdrive?q=${encodeURIComponent(chosen.dllink)}`;
+        const apiUrl = `https://dark-knight-xmd-reset-apis.vercel.app/api/gdrive?url=${encodeURIComponent(chosen.dllink)}`;
         const apiRes = await axios.get(apiUrl);
         const direct = apiRes.data.result.downloadUrl;
 
