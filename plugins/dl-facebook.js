@@ -94,6 +94,7 @@ cmd({
   }
 });
 
+
 cmd({
   pattern: "facebook2",
   alias: ["fb2"], 
@@ -109,16 +110,16 @@ cmd({
     await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
     // ✅ Fetching data from Aswin API
-    const apiUrl = `https://api.vreden.my.id/api/v1/download/facebook?url=${encodeURIComponent(q)}`;
+    const apiUrl = `https://gtech-api-xtp1.onrender.com/api/video/fb?apikey=APIKEY&url=${encodeURIComponent(q)}`;
     const response = await axios.get(apiUrl);
     const data = response.data;
 
-    if (!data?.status || !data?.result || !data?.result?.download) {
+    if (!data?.status || !data?.result || !data?.result?.media) {
       return reply("⚠️ Failed to retrieve Facebook media. Please check the link and try again.");
     }
 
-    const { title, thumbnail } = data.result;
-    const { sd, hd } = data.result.download;  
+    // Adjusted to match the new API response structure
+    const { title, thumbnail, video_url_sd, video_url_hd } = data.result.media;  
     
     const caption = `
 📺 *Facebook Downloader.* 📥
@@ -156,21 +157,21 @@ cmd({
         switch (receivedText.trim()) {
           case "1":
             await conn.sendMessage(senderID, {
-              video: { url: sd },
+              video: { url: video_url_sd },
               caption: "📥 *Downloaded in SD Quality*"
             }, { quoted: receivedMsg });
             break;
 
           case "2":
             await conn.sendMessage(senderID, {
-              video: { url: hd },
+              video: { url: video_url_hd },
               caption: "📥 *Downloaded in HD Quality*"
             }, { quoted: receivedMsg });
             break;
 
           case "3": 
             await conn.sendMessage(senderID, { 
-              audio: { url: sd || hd}, 
+              audio: { url: video_url_sd || video_url_hd }, 
               mimetype: "audio/mp4", 
               ptt: false 
           }, { quoted: receivedMsg }); 
