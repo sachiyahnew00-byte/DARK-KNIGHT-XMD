@@ -110,7 +110,7 @@ cmd({
     await conn.sendMessage(from, { react: { text: '⏳', key: m.key } });
 
     // ✅ Fetching data from API
-    const apiUrl = `https://api.vreden.my.id/api/v1/download/facebook?url=${encodeURIComponent(q)}`;
+    const apiUrl = `https://apis.davidcyril.name.ng/facebook2?url=${encodeURIComponent(q)}`;
     const response = await axios.get(apiUrl);
     const data = response.data;
 
