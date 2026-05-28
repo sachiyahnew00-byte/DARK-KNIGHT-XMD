@@ -23,7 +23,7 @@ cmd({
 
         if (!data) {
             // API එක භාවිතයෙන් සෙවීම
-            const url = `https://apiskeith.top/search/lyrics3?query=${encodeURIComponent(q)}`;
+            const url = `https://eliteprotech-apis.zone.id/lyrics?query=${encodeURIComponent(q)}`;
             const res = await axios.get(url);
             
             data = res.data;
