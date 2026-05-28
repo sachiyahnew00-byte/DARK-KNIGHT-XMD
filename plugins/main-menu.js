@@ -579,7 +579,7 @@ cmd({
                                 await conn.sendMessage(
                                     senderID,
                                     {
-                                        image: { url: config.MENU_IMAGE_URL || 'https://files.catbox.moe/brlkte.jpg' },
+                                        image: { url: config.ALIVE_IMG },
                                         caption: selectedMenu.content,
                                         contextInfo: contextInfo
                                     },
