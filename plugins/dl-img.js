@@ -3,65 +3,6 @@ const axios = require("axios");
 
 cmd({
     pattern: "img",
-    react: "🦋",
-    desc: "Search and download Google images",
-    category: "download",
-    use: ".img <keywords>",
-    filename: __filename
-}, async (conn, mek, m, { reply, args, from }) => {
-    try {
-        const query = args.join(" ");
-        if (!query) {
-            return reply("🖼️ Please provide a search query\nExample: .img cute cats");
-        }
-
-        await reply(`🔍 Searching images for *"${query}"*...`);
-
-        const api = `https://apiskeith.top/search/images?query=${encodeURIComponent(query)}`;
-        const { data } = await axios.get(api);
-
-        // Check response validity
-        if (!data?.status || !Array.isArray(data.result) || data.result.length === 0) {
-            return reply("❌ No images found. Try different keywords.");
-        }
-
-        // Extract URLs
-        const images = data.result.map(img => img.url);
-
-        await reply(`✅ Found *${images.length}* results for *"${query}"*. Sending top 5...`);
-
-        // Shuffle & pick 5
-        const selectedImages = images
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 5);
-
-        for (const imageUrl of selectedImages) {
-            try {
-                await conn.sendMessage(
-                    from,
-                    {
-                        image: { url: imageUrl },
-                        caption: `📷 Result for: *${query}*\n\nRequested by: @${m.sender.split('@')[0]}\n> © Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`,
-                        contextInfo: { mentionedJid: [m.sender] }
-                    },
-                    { quoted: mek }
-                );
-            } catch (err) {
-                console.warn(`⚠️ Failed to send image: ${imageUrl}`);
-            }
-
-            await new Promise(res => setTimeout(res, 1000)); // small delay
-        }
-
-    } catch (error) {
-        console.error("Image Search Error:", error);
-        reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
-    }
-});
-
-
-cmd({
-    pattern: "image",
     react: "🖼️",
     desc: "Search and download Images",
     category: "download",
@@ -123,3 +64,62 @@ cmd({
         reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
     }
 });                                  
+
+
+cmd({
+    pattern: "image",
+    react: "🦋",
+    desc: "Search and download Google images",
+    category: "download",
+    use: ".img <keywords>",
+    filename: __filename
+}, async (conn, mek, m, { reply, args, from }) => {
+    try {
+        const query = args.join(" ");
+        if (!query) {
+            return reply("🖼️ Please provide a search query\nExample: .img cute cats");
+        }
+
+        await reply(`🔍 Searching images for *"${query}"*...`);
+
+        const api = `https://api.deline.web.id/search/pinterest?q=${encodeURIComponent(query)}`;
+        const { data } = await axios.get(api);
+
+        // Check response validity according to the new API structure
+        if (!data?.status || !Array.isArray(data.data) || data.data.length === 0) {
+            return reply("❌ No images found. Try different keywords.");
+        }
+
+        // Extract URLs using 'img.image' instead of 'img.url'
+        const images = data.data.map(img => img.image);
+
+        await reply(`✅ Found *${images.length}* results for *"${query}"*📤 Sending top 5...`);
+
+        // Shuffle & pick 5
+        const selectedImages = images
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 5);
+
+        for (const imageUrl of selectedImages) {
+            try {
+                await conn.sendMessage(
+                    from,
+                    {
+                        image: { url: imageUrl },
+                        caption: `📷 Result for: *${query}*\n\nRequested by: @${m.sender.split('@')[0]}\n> © Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`,
+                        contextInfo: { mentionedJid: [m.sender] }
+                    },
+                    { quoted: mek }
+                );
+            } catch (err) {
+                console.warn(`⚠️ Failed to send image: ${imageUrl}`);
+            }
+
+            await new Promise(res => setTimeout(res, 1000)); // small delay
+        }
+
+    } catch (error) {
+        console.error("Image Search Error:", error);
+        reply(`❌ Error: ${error.message || "Failed to fetch images"}`);
+    }
+});
