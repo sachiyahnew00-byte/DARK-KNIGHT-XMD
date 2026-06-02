@@ -2,7 +2,6 @@ const { cmd } = require('../command');
 const yts = require('yt-search');
 const axios = require('axios');
 
-
 cmd({
     pattern: "song",
     react: "🎵",
@@ -20,113 +19,14 @@ cmd({
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        const api = `https://apiziaul.vercel.app/api/downloader/ytmp3?url=${encodeURIComponent(ytUrl)}`;
-        const { data: apiRes } = await axios.get(api);
-        
-        if (!apiRes?.status || !apiRes.result?.downloadUrl) {
-            return reply("❌ Unable to download the song. Please try another one!");
-        }
-
-        const results = apiRes.result;
-
-        const caption = `
-🎵 *Song Downloader.* 📥
-
-📑 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📆 *Uploaded:* ${data.ago}
-📊 *Views:* ${data.views}
-🔗 *Link:* ${ytUrl}
-
-🔢 *Reply Below Number*
-
-1️⃣ *Audio Type*
-2️⃣ *Document Type*
-3️⃣ *Voice Note*
- 
-> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
-
-        const sentMsg = await conn.sendMessage(from, {
-            image: { url: data.thumbnail },
-            caption
-        }, { quoted: m });
-
-        const messageID = sentMsg.key.id;
-
-    conn.ev.on("messages.upsert", async (msgData) => {
-      const receivedMsg = msgData.messages[0];
-      if (!receivedMsg?.message) return;
-
-      const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
-      const senderID = receivedMsg.key.remoteJid;
-      const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
-
-      if (isReplyToBot) {
-        await conn.sendMessage(senderID, { react: { text: '⏳', key: receivedMsg.key } });
-
-        switch (receivedText.trim()) {
-                case "1":
-                    await conn.sendMessage(senderID, {
-                        audio: { url: results.downloadUrl },
-                        mimetype: "audio/mpeg",
-                        ptt: false,
-                    }, { quoted: receivedMsg });
-                    break;
-
-                case "2":
-                    await conn.sendMessage(senderID, {
-                        document: { url: results.downloadUrl },
-                        mimetype: "audio/mpeg",
-                        fileName: `${data.title}.mp3`
-                    }, { quoted: receivedMsg });
-                    break;
-
-                case "3":
-                    await conn.sendMessage(senderID, {
-                        audio: { url: results.downloadUrl },
-                        mimetype: "audio/mpeg",
-                        ptt: true,
-                    }, { quoted: receivedMsg });
-                    break;
-
-          default:
-            reply("❌ Invalid option! Please reply with 1, 2, or 3.");
-        }
-      }
-    });
-
-  } catch (error) {
-    console.error("Song Command Error:", error);
-    reply("❌ An error occurred while processing your request. Please try again later.");
-  }
-});
-
-cmd({
-    pattern: "song1",
-    react: "🎵",
-    desc: "Download YouTube MP3",
-    category: "download",
-    use: ".song <query>",
-    filename: __filename
-}, async (conn, mek, m, { from, reply, q }) => {
-    try {
-        if (!q) return reply("❓ What song do you want to download?");
-
-        const search = await yts(q);
-        if (!search.videos.length) return reply("❌ No results found for your query.");
-
-        const data = search.videos[0];
-        const ytUrl = data.url;
-
-        // Use Zenzxz API
-        const api = `https://sai-green.vercel.app/manump3?url=${encodeURIComponent(ytUrl)}`;
+        const api = `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp3?url=${encodeURIComponent(ytUrl)}`;
         const { data: apiRes } = await axios.get(api);
 
         if (!apiRes?.status || !apiRes.download?.url) {
             return reply("❌ Unable to download the song. Please try another one!");
         }
 
-        const result = apiRes.download;
+        const results = apiRes.download;
 
         const caption = `
 🎵 *Song Downloader.* 📥
@@ -166,7 +66,7 @@ cmd({
         switch (receivedText.trim()) {
                 case "1":
                     await conn.sendMessage(senderID, {
-                        audio: { url: result.url },
+                        audio: { url: results.url },
                         mimetype: "audio/mpeg",
                         ptt: false,
                     }, { quoted: receivedMsg });
@@ -174,7 +74,7 @@ cmd({
 
                 case "2":
                     await conn.sendMessage(senderID, {
-                        document: { url: result.url },
+                        document: { url: results.url },
                         mimetype: "audio/mpeg",
                         fileName: `${data.title}.mp3`
                     }, { quoted: receivedMsg });
@@ -182,7 +82,7 @@ cmd({
 
                 case "3":
                     await conn.sendMessage(senderID, {
-                        audio: { url: result.url },
+                        audio: { url: results.url },
                         mimetype: "audio/mpeg",
                         ptt: true,
                     }, { quoted: receivedMsg });
@@ -201,121 +101,7 @@ cmd({
 });
 
 cmd({
-    pattern: "song2",
-    react: "🎵",
-    desc: "Download YouTube MP3",
-    category: "download",
-    use: ".song <query>",
-    filename: __filename
-}, async (conn, mek, m, { from, reply, q }) => {
-    try {
-        if (!q) return reply("❓ What song do you want to download?");
-
-        const search = await yts(q);
-        if (!search.videos.length) return reply("❌ No results found for your query.");
-
-        const data = search.videos[0];
-        const ytUrl = data.url;
-
-        let downloadUrl = null;
-
-        try {
-            const response = await axios.get(`https://eliteprotech-apis.zone.id/ytmp3?url=${encodeURIComponent(ytUrl)}`);
-            if (response.data && response.data.status && response.data.result.download) {
-                downloadUrl = response.data.result.download;
-            }
-        } catch (e) {
-            
-        }
-
-        if (!downloadUrl) {
-            try {
-                const response = await axios.get(`https://ominisave.com/api/ytmp3_v3?url=${encodeURIComponent(ytUrl)}`);
-                if (response.data && response.data.status && response.data.result.downloadUrl) {
-                    downloadUrl = response.data.result.downloadUrl;
-                }
-            } catch (e) {
-                
-            }
-        }
-
-        if (!downloadUrl) {
-            return reply("❌ Unable to download the song. Please try another one!");
-        }
-
-        const caption = `
-🎵 *Song Downloader.* 📥
-
-📑 *Title:* ${data.title}
-⏱️ *Duration:* ${data.timestamp}
-📆 *Uploaded:* ${data.ago}
-📊 *Views:* ${data.views}
-🔗 *Link:* ${ytUrl}
-
-🔢 *Reply Below Number*
-
-1️⃣ *Audio Type*
-2️⃣ *Document Type*
-3️⃣ *Voice Note*
- 
-> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
-
-        const sentMsg = await conn.sendMessage(from, {
-            image: { url: data.thumbnail },
-            caption
-        }, { quoted: m });
-
-        const messageID = sentMsg.key.id;
-
-        conn.ev.on("messages.upsert", async (msgData) => {
-            const receivedMsg = msgData.messages[0];
-            if (!receivedMsg?.message) return;
-
-            const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
-            const senderID = receivedMsg.key.remoteJid;
-            const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
-
-            if (isReplyToBot) {
-                await conn.sendMessage(senderID, { react: { text: '⏳', key: receivedMsg.key } });
-
-                switch (receivedText.trim()) {
-                    case "1":
-                        await conn.sendMessage(senderID, {
-                            audio: { url: downloadUrl },
-                            mimetype: "audio/mpeg",
-                            ptt: false,
-                        }, { quoted: receivedMsg });
-                        break;
-
-                    case "2":
-                        await conn.sendMessage(senderID, {
-                            document: { url: downloadUrl },
-                            mimetype: "audio/mpeg",
-                            fileName: `${data.title}.mp3`
-                        }, { quoted: receivedMsg });
-                        break;
-
-                    case "3":
-                        await conn.sendMessage(senderID, {
-                            audio: { url: downloadUrl },
-                            mimetype: "audio/mpeg",
-                            ptt: true,
-                        }, { quoted: receivedMsg });
-                        break;
-
-                    default:
-                        reply("❌ Invalid option! Please reply with 1, 2, or 3.");
-                }
-            }
-        });
-
-    } catch (error) {
-        reply("❌ An error occurred while processing your request. Please try again later.");
-    }
-});
-
-cmd({
-    pattern: "song3",
+    pattern: "song1",
     react: "🎵",
     desc: "Download YouTube MP3",
     category: "download",
@@ -412,6 +198,104 @@ cmd({
   }
 });
 
+cmd({
+    pattern: "song2",
+    react: "🎵",
+    desc: "Download YouTube MP3",
+    category: "download",
+    use: ".song <query>",
+    filename: __filename
+}, async (conn, mek, m, { from, reply, q }) => {
+    try {
+        if (!q) return reply("❓ What song do you want to download?");
+
+        const search = await yts(q);
+        if (!search.videos.length) return reply("❌ No results found for your query.");
+
+        const data = search.videos[0];
+        const ytUrl = data.url;
+
+        const api = `https://sai-green.vercel.app/manump3?url=${encodeURIComponent(ytUrl)}`;
+        const { data: apiRes } = await axios.get(api);
+
+        if (!apiRes?.status || !apiRes.download?.url) {
+            return reply("❌ Unable to download the song. Please try another one!");
+        }
+
+        const result = apiRes.download;
+
+        const caption = `
+🎵 *Song Downloader.* 📥
+
+📑 *Title:* ${data.title}
+⏱️ *Duration:* ${data.timestamp}
+📆 *Uploaded:* ${data.ago}
+📊 *Views:* ${data.views}
+🔗 *Link:* ${data.url}
+
+🔢 *Reply Below Number*
+
+1️⃣ *Audio Type*
+2️⃣ *Document Type*
+3️⃣ *Voice Note*
+ 
+> Powered by 𝙳𝙰𝚁𝙺-𝙺𝙽𝙸𝙶𝙷𝚃-𝚇𝙼𝙳`;
+
+        const sentMsg = await conn.sendMessage(from, {
+            image: { url: data.thumbnail },
+            caption
+        }, { quoted: m });
+
+        const messageID = sentMsg.key.id;
+
+    conn.ev.on("messages.upsert", async (msgData) => {
+      const receivedMsg = msgData.messages[0];
+      if (!receivedMsg?.message) return;
+
+      const receivedText = receivedMsg.message.conversation || receivedMsg.message.extendedTextMessage?.text;
+      const senderID = receivedMsg.key.remoteJid;
+      const isReplyToBot = receivedMsg.message.extendedTextMessage?.contextInfo?.stanzaId === messageID;
+
+      if (isReplyToBot) {
+        await conn.sendMessage(senderID, { react: { text: '⏳', key: receivedMsg.key } });
+
+        switch (receivedText.trim()) {
+                case "1":
+                    await conn.sendMessage(senderID, {
+                        audio: { url: result.url },
+                        mimetype: "audio/mpeg",
+                        ptt: false,
+                    }, { quoted: receivedMsg });
+                    break;
+
+                case "2":
+                    await conn.sendMessage(senderID, {
+                        document: { url: result.url },
+                        mimetype: "audio/mpeg",
+                        fileName: `${data.title}.mp3`
+                    }, { quoted: receivedMsg });
+                    break;
+
+                case "3":
+                    await conn.sendMessage(senderID, {
+                        audio: { url: result.url },
+                        mimetype: "audio/mpeg",
+                        ptt: true,
+                    }, { quoted: receivedMsg });
+                    break;
+
+          default:
+            reply("❌ Invalid option! Please reply with 1, 2, or 3.");
+        }
+      }
+    });
+
+  } catch (error) {
+    console.error("Song Command Error:", error);
+    reply("❌ An error occurred while processing your request. Please try again later.");
+  }
+});
+              
 
 cmd({
     pattern: "video",
@@ -430,16 +314,15 @@ cmd({
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        // Define API links for multiple qualities
+
         const formats = {
             "144p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=144p`,
-            "240p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=360p`,
-            "360p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=480p`,
-            "480p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=720p`,
-            "720p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=1080p`
+            "240p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=144p`,
+            "360p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=360p`,
+            "480p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=480p`,
+            "720p": `https://ominisave.com/api/ytmp4_v2?url=${encodeURIComponent(ytUrl)}&quality=720p`
         };
 
-        // Prepare caption
         const caption = `
 🎥 *Video Downloader.* 📥
 
@@ -475,7 +358,6 @@ cmd({
 
         const messageID = sentMsg.key.id;
 
-        // Listen for user replies
         conn.ev.on("messages.upsert", async (msgData) => {
             const receivedMsg = msgData.messages[0];
             if (!receivedMsg?.message) return;
@@ -553,16 +435,14 @@ cmd({
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        // Define API links for multiple qualities
         const formats = {
-            "144p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=144`,
-            "240p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=240`,
-            "360p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=360`,
-            "480p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=480`,
-            "720p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=720`
+            "144p": `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp4?url=${encodeURIComponent(ytUrl)}&quality=144`,
+            "240p": `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp4?url=${encodeURIComponent(ytUrl)}&quality=240`,
+            "360p": `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp4?url=${encodeURIComponent(ytUrl)}&quality=360`,
+            "480p": `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp4?url=${encodeURIComponent(ytUrl)}&quality=480`,
+            "720p": `https://dark-knight-xmd-yt-dl-api.vercel.app/download/ytmp4?url=${encodeURIComponent(ytUrl)}&quality=720`
         };
 
-        // Prepare caption
         const caption = `
 🎥 *Video Downloader.* 📥
 
@@ -598,7 +478,6 @@ cmd({
 
         const messageID = sentMsg.key.id;
 
-        // Listen for user replies
         conn.ev.on("messages.upsert", async (msgData) => {
             const receivedMsg = msgData.messages[0];
             if (!receivedMsg?.message) return;
@@ -647,7 +526,7 @@ cmd({
                     await conn.sendMessage(senderID, {
                         video: { url: result.url },
                         mimetype: "video/mkv",
-                        ptt:false,
+                        ptt: false,
                     }, { quoted: receivedMsg });
                 }
             }
@@ -676,16 +555,14 @@ cmd({
         const data = search.videos[0];
         const ytUrl = data.url;
 
-        // Define API links for multiple qualities
         const formats = {
-            "144p": `https://www.movanest.xyz/v2/ytdl2?input=${encodeURIComponent(ytUrl)}&format=video&quality=144p`,
-            "240p": `https://www.movanest.xyz/v2/ytdl2?input=${encodeURIComponent(ytUrl)}&format=video&quality=240p`,
-            "360p": `https://www.movanest.xyz/v2/ytdl2?input=${encodeURIComponent(ytUrl)}&format=video&quality=360p`,
-            "480p": `https://www.movanest.xyz/v2/ytdl2?input=${encodeURIComponent(ytUrl)}&format=video&quality=480p`,
-            "720p": `https://www.movanest.xyz/v2/ytdl2?input=${encodeURIComponent(ytUrl)}&format=video&quality=720p`
+            "144p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=144`,
+            "240p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=240`,
+            "360p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=360`,
+            "480p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=480`,
+            "720p": `https://sai-green.vercel.app/manump4?url=${encodeURIComponent(ytUrl)}&quality=720`
         };
 
-        // Prepare caption
         const caption = `
 🎥 *Video Downloader.* 📥
 
@@ -721,7 +598,6 @@ cmd({
 
         const messageID = sentMsg.key.id;
 
-        // Listen for user replies
         conn.ev.on("messages.upsert", async (msgData) => {
             const receivedMsg = msgData.messages[0];
             if (!receivedMsg?.message) return;
@@ -741,7 +617,7 @@ cmd({
                     case "1.3": selectedFormat = "360p"; break;
                     case "1.4": selectedFormat = "480p"; break;
                     case "1.5": selectedFormat = "720p"; break;
-
+                    
                     case "2.1": selectedFormat = "144p"; isDocument = true; break;
                     case "2.2": selectedFormat = "240p"; isDocument = true; break;
                     case "2.3": selectedFormat = "360p"; isDocument = true; break;
@@ -749,26 +625,26 @@ cmd({
                     case "2.5": selectedFormat = "720p"; isDocument = true; break;
 
                     default:
-                        return reply("❌ Invalid option! Please reply with 1.1-1.4 or 2.1-2.4.");
+                        return reply("❌ Invalid option! Please reply with 1.1-1.5 or 2.1-2.5.");
                 }
 
                 const { data: apiRes } = await axios.get(formats[selectedFormat]);
 
-                if (!apiRes?.status || !apiRes.results) {
+                if (!apiRes?.status || !apiRes.download?.url) {
                     return reply(`❌ Unable to download the ${selectedFormat} version. Try another one!`);
                 }
 
-                const download = apiRes.results.recommended;
+                const result = apiRes.download;
 
                 if (isDocument) {
                     await conn.sendMessage(senderID, {
-                        document: { url: download.dlurl },
+                        document: { url: result.url },
                         mimetype: "video/mp4",
                         fileName: `${data.title}.mp4`
                     }, { quoted: receivedMsg });
                 } else {
                     await conn.sendMessage(senderID, {
-                        video: { url: download.dlurl },
+                        video: { url: result.url },
                         mimetype: "video/mp4",
                         ptt:false,
                     }, { quoted: receivedMsg });
